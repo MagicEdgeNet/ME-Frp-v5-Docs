@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "title": "幻缘映射 V5 使用文档",
+  "entry": "usage/common",
+  "toc": { "minDepth": 2, "maxDepth": 3 },
+  "redirects": { "questions": "faq/account" },
+  "groups": [
+    {
+      "id": "errors", "title": "常见报错速查", "icon": "DocumentLockOutline", "standalone": true,
+      "pages": [
+        { "path": "errors", "title": "常见报错速查", "icon": "DocumentLockOutline", "description": "ME Frp 常见报错速查——快速定位并解决连接、认证、配置等错误码。" }
+      ]
+    },
+    {
+      "id": "usage", "title": "启动隧道教程", "icon": "RocketOutline",
+      "pages": [
+        { "path": "usage/common", "title": "通用客户端", "icon": "CodeSlashOutline", "description": "ME Frp 通用客户端教程——一键下载并运行客户端，快速完成隧道映射配置。" },
+        { "path": "usage/docker", "title": "Docker 容器", "icon": "ServerOutline", "description": "在 Docker 容器中使用 ME Frp——通过官方镜像轻松部署内网穿透服务。" },
+        { "path": "usage/fnnas", "title": "fnOS 飞牛私有云", "icon": "FolderOutline", "description": "飞牛 fnOS 使用 ME Frp——在飞牛私有云上配置内网穿透，随时访问 NAS 数据。" },
+        { "path": "usage/3rdparty-clients", "title": "第三方客户端教程", "navTitle": "第三方客户端", "icon": "PhonePortraitOutline", "description": "第三方客户端教程——幻缘映射 V5 使用文档。" }
+      ]
+    },
+    {
+      "id": "safety", "title": "安全提醒", "icon": "AlertCircleOutline", "standalone": true,
+      "pages": [
+        { "path": "safety", "title": "安全提醒", "icon": "AlertCircleOutline", "description": "ME Frp 安全使用提醒——了解内网穿透的安全注意事项，保护您的服务安全。" }
+      ]
+    },
+    {
+      "id": "questions", "title": "疑难杂症", "icon": "InformationCircleOutline",
+      "pages": [
+        { "path": "faq/account", "title": "账户相关", "icon": "PersonOutline", "description": "ME Frp 账户常见问题——注册、登录、实名认证等账户相关问题解答。" },
+        { "path": "faq/network", "title": "网络相关", "icon": "WifiOutline", "description": "ME Frp 网络常见问题——连接失败、延迟高、速度慢等网络问题排查指南。" },
+        { "path": "faq/mefrpc", "title": "客户端", "navTitle": "客户端相关", "icon": "PhonePortraitOutline", "description": "ME Frp 客户端常见问题——启动失败、配置错误等客户端使用问题解答。" },
+        { "path": "faq/beian", "title": "备案相关", "icon": "ShieldCheckmarkOutline", "description": "ICP 备案相关问题——ME Frp 建站备案要求及常见问题解答。" },
+        { "path": "faq/site-inaccessible", "title": "无法访问映射的网站", "navTitle": "网站访问相关", "icon": "GlobeOutline", "description": "无法访问映射网站的排查指南——排查 HTTP/HTTPS 隧道访问异常的常见原因与解决方法。" },
+        { "path": "faq/misc", "title": "其他问题", "icon": "HelpCircleOutline", "description": "其他问题 — 幻缘映射 V5 使用文档。" }
+      ]
+    },
+    {
+      "id": "app", "title": "实际场景配置", "icon": "AppsOutline",
+      "pages": [
+        { "path": "app/minecraft", "title": "Minecraft 开服联机", "icon": "GameControllerOutline", "description": "Minecraft 开服联机教程——使用 ME Frp 内网穿透，无需公网 IP 即可与好友联机。" },
+        { "path": "app/rdp", "title": "Windows 远程桌面", "icon": "DesktopOutline", "description": "Windows 远程桌面 (RDP) 穿透教程——通过 ME Frp 在任意网络下安全访问家中或办公室的 Windows 电脑。" },
+        { "path": "app/website", "title": "Web 建站", "icon": "GlobeOutline", "description": "使用 ME Frp 建站教程——将本地 Web 服务映射到公网，实现免备案本地建站。" },
+        { "path": "app/stardew-valley", "title": "星露谷物语 (Stardew Valley) 联机", "navTitle": "星露谷物语 联机", "icon": "GameControllerOutline", "description": "星露谷物语 (Stardew Valley) 联机教程——通过 ME Frp 与好友一起耕种农场。" },
+        { "path": "app/navidrome", "title": "Navidrome 音乐流媒体服务器", "navTitle": "Navidrome 音乐流媒体", "icon": "GlobeOutline", "description": "Navidrome 音乐流媒体服务器穿透教程——通过 ME Frp 在外网访问自建音乐库。" },
+        { "path": "app/vnc", "title": "VNC", "navTitle": "VNC 远程访问", "icon": "DesktopOutline", "description": "VNC 远程桌面穿透教程——通过 ME Frp 在公网访问内网 VNC 服务。" },
+        { "path": "app/ssh", "title": "SSH 远程访问", "icon": "TerminalOutline", "description": "SSH 远程访问穿透教程——通过 ME Frp 在公网随时 SSH 登录家中或服务器。" },
+        { "path": "app/smb", "title": "SMB 文件共享", "icon": "FolderOutline", "description": "SMB 文件共享穿透教程——通过 ME Frp 在外网访问内网 Windows 共享文件夹。" },
+        { "path": "app/palworld", "title": "幻兽帕鲁 (Palworld) 开服联机", "navTitle": "幻兽帕鲁联机", "icon": "GameControllerOutline", "description": "幻兽帕鲁 (Palworld) 开服联机教程——使用 ME Frp 快速搭建帕鲁专用服务器并与好友联机。" }
+      ]
+    }
+  ],
+  "unlisted": [
+    { "path": "test", "title": "测试", "description": "文档渲染测试页面。", "index": false }
+  ]
+}
