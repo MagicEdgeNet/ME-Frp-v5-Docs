@@ -39,6 +39,18 @@ node scripts/check.mjs
 
 在前端项目中修改已检出的 `docs-content/`，运行 `pnpm run dev`；构建时运行 `pnpm run build`。具体命令见 [贡献指南](CONTRIBUTING.md)。
 
-## 许可与来源
+## License
 
-初始内容迁自 `MagicEdgeNet/ME-Frp-v5-Frontend` 的 `public/_docs`，保留原项目 AGPL-3.0 许可，见 `LICENSE`。请只提交有权分发的内容和图片，保留必要署名；不要提交账户凭据、Token 或未经打码的个人信息。
+本仓库的代码采用 [MIT License](LICENSE)。
+
+除非特别说明，本仓库中的原创文档内容采用：
+
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+
+完整协议请参阅：
+
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+## 内容来源
+
+初始内容迁自 `MagicEdgeNet/ME-Frp-v5-Frontend` 的 `public/_docs`。第三方内容及资源遵循其各自的许可和署名要求。请只提交有权分发的内容和图片，保留必要署名；不要提交账户凭据、Token 或未经打码的个人信息。
