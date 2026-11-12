@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://docs.mefrp.com/sitemap.xml

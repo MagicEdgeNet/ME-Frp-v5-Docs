@@ -1,0 +1,193 @@
+@use '../variables' as *;
+
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1202;
+    user-select: none;
+    background-color: color-mix(in srgb, var(--n-color-modal, var(--docs-bg, #fff)) 82%, transparent) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    backdrop-filter: blur(14px) saturate(180%);
+}
+
+.navbar-content {
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.logo {
+    flex: 1;
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.logo h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    background: $text-color;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.desktop-menu {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pc-navbar {
+    height: 53px;
+    box-sizing: border-box;
+
+    .navbar-content {
+        height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    @media (max-width: 768px), (max-device-width: 768px) {
+        display: none;
+    }
+}
+
+.mobile-navbar {
+    display: none;
+
+    @media (max-width: 768px), (max-device-width: 768px) {
+        display: block;
+    }
+}
+
+.mobile-header {
+    padding: 0 16px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.mobile-menu-trigger {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+}
+
+.docs-mobile-nav-scroll {
+    width: min(320px, calc(100vw - 32px));
+    max-height: min(70dvh, 600px);
+}
+
+.docs-mobile-nav-menu {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.docs-mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px 0;
+}
+
+.docs-mobile-nav-links :deep(.n-button) {
+    width: 100%;
+    min-height: 40px;
+    justify-content: flex-start;
+    padding: 0 12px;
+}
+
+.docs-mobile-nav-menu :deep(.n-divider) { margin: 8px 0 4px; }
+.docs-mobile-nav-menu :deep(.n-menu) { --n-item-height: 42px; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content) { border-radius: 0; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content--selected) { font-weight: 600; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content-header) { align-items: center; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content__icon) { margin-right: 10px; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content__arrow) { margin-left: auto; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content__icon),
+.docs-mobile-nav-menu :deep(.n-menu-item-content-header) { min-width: 0; }
+.docs-mobile-nav-menu :deep(.n-menu-item-content-header a) { overflow: hidden; text-overflow: ellipsis; }
+
+
+/* 移动端适配 */
+@media (max-width: 768px), (max-device-width: 768px) {
+    .navbar-content {
+        padding: 12px 16px;
+        gap: 8px;
+    }
+
+    .logo {
+        flex: none;
+    }
+
+    .logo h2 {
+        font-size: 0.9rem;
+        background: $text-color;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+}
+
+.nav-links {
+    .n-button {
+        font-size: 0.95rem;
+        border-radius: 7px;
+    }
+}
+
+.mobile-menu {
+    min-width: 160px;
+    margin: -8px -16px;
+}
+
+
+// 标题相关样式
+.logo-and-title {
+    display: flex;
+    align-items: left;
+    margin-right: auto;
+
+    .title-divider {
+        height: 10px;
+        width: 1px;
+        background-color: var(--border-color);
+        margin: 0 12px;
+    }
+}
+
+// 移动端标题样式
+.mobile-title {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}

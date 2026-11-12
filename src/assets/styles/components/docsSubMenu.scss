@@ -1,0 +1,90 @@
+@use '../variables' as *;
+
+.docs-sub-menu {
+  position: fixed;
+  z-index: 1201;
+  top: 56px;
+  left: 0;
+  right: 0;
+  height: 48px;
+  border-bottom: 1px solid var(--docs-line, #efeff5);
+  background: color-mix(in srgb, var(--n-color-modal, var(--docs-bg, #fff)) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+}
+
+.toc-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 47px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--text-color-1);
+  text-align: left;
+  cursor: pointer;
+}
+
+.toc-trigger:focus-visible {
+  outline: 2px solid var(--docs-accent);
+  outline-offset: -3px;
+}
+
+.toc-trigger-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toc-trigger-hint {
+  color: var(--docs-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.mobile-toc-drawer-panel :deep(.n-drawer-header) { display: none; }
+.mobile-toc-drawer-panel :deep(.n-drawer-body-content-wrapper) { overflow: auto; padding-top: 0; }
+
+.mobile-toc-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 0;
+}
+
+.mobile-toc-drawer :deep(a) {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  min-height: 40px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 0;
+  color: var(--n-text-color, #333639);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.mobile-toc-drawer :deep(.is-nested a) { padding-left: 28px; }
+.mobile-toc-drawer :deep(.is-active a) {
+  color: var(--docs-accent, #2563eb);
+  background: color-mix(in srgb, var(--docs-accent, #2563eb) 10%, transparent);
+  box-shadow: inset 3px 0 0 var(--docs-accent, #2563eb);
+  font-weight: 600;
+}
+.mobile-toc-drawer :deep(a:hover) { background: color-mix(in srgb, var(--docs-accent, #2563eb) 7%, transparent); }
+.mobile-toc-drawer :deep(.is-active a:hover) { background: color-mix(in srgb, var(--docs-accent, #2563eb) 14%, transparent); }
+.toc-empty { margin: 0; padding: 10px 12px; color: var(--docs-muted); font-size: 13px; }
+
+@media (min-width: 769px) and (min-device-width: 769px) {
+  .docs-sub-menu { display: none; }
+}
