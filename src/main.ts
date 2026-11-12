@@ -2,6 +2,7 @@ import { createApp, computed, ref } from 'vue'
 import { darkTheme } from 'naive-ui'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
+import Home from './views/Home.vue'
 import Docs from './views/Docs.vue'
 import DocPage from './views/DocPage.vue'
 import NotFound from './views/NotFound.vue'
@@ -23,7 +24,7 @@ const themeContext: ThemeContext = {
 }
 
 const routes = [
-  { path: '/', redirect: docPath(docsManifest.entry) },
+  { path: '/', component: Home },
   {
     path: '/docs', component: Docs, redirect: docPath(docsManifest.entry),
     children: [

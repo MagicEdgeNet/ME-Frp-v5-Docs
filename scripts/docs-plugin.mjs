@@ -110,22 +110,29 @@ export function docsPlugin() {
     generateBundle(_options, bundle) {
       const index = bundle['index.html']
       if (!index || index.type !== 'asset') throw new Error('无法生成文档静态 HTML：缺少入口 HTML')
+      const home = docs.compiled.get('home')
+      if (!home) throw new Error('无法生成站点首页：manifest 缺少 home 页面')
+      const homeTemplate = String(index.source)
+      const homeMarkup = `<main id="portal-static"><h1>${esc(home.title)}</h1>${home.html}</main>`
+      const homeDocument = homeTemplate
+        .replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(home.title)} | ${esc(docs.manifest.title)}</title>`)
+        .replace('</head>', `<meta name="description" content="${esc(home.description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="${origin}/"><meta property="og:title" content="${esc(home.title)}"><meta property="og:description" content="${esc(home.description)}"><meta property="og:url" content="${origin}/"></head>`)
+        .replace('<div id="app"></div>', `<div id="app">${homeMarkup}</div>`)
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source })
       for (const page of docs.compiled.values()) {
-        emit(`docs/${page.path}/index.html`, staticDocument(String(index.source), page, docs))
+        emit(`docs/${page.path}/index.html`, staticDocument(homeTemplate, page, docs))
         emit(`_docs-data/${page.path}.json`, json({ html: page.html, headings: page.headings }))
         emit(`_docs/${page.path}.md`, page.markdown)
       }
-      emit('docs/index.html', staticDocument(String(index.source), docs.compiled.get(docs.manifest.entry), docs))
+      emit('docs/index.html', staticDocument(homeTemplate, docs.compiled.get(docs.manifest.entry), docs))
       for (const [from, to] of Object.entries(docs.manifest.redirects || {})) {
         const target = `/docs/${to}`
         emit(`docs/${from}/index.html`, `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="robots" content="noindex,follow"><link rel="canonical" href="${origin}${target}"><script>location.replace(${json(target)}+location.search+location.hash)</script><meta http-equiv="refresh" content="0;url=${target}"><title>文档已移动</title></head><body><a href="${target}">前往文档</a></body></html>`)
       }
       for (const asset of docs.assets) emit(`docs-assets/${asset}`, readFileSync(resolve(contentRoot, 'assets', asset)))
-      index.source = staticDocument(String(index.source), docs.compiled.get(docs.manifest.entry), docs)
-      const sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
-      const entries = docs.pages.filter(p => p.index !== false).map(page => `  <url><loc>${origin}${href(page)}</loc></url>`).join('\n')
-      emit('sitemap.xml', sitemap.replace('</urlset>', `${entries}\n</urlset>`))
+      index.source = homeDocument
+      const sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + docs.pages.filter(page => page.index !== false && page.path !== 'home').map(page => `<url><loc>${origin}${href(page)}</loc></url>`).join('') + `<url><loc>${origin}/</loc></url></urlset>`
+      emit('sitemap.xml', sitemap)
     }
   }
 }

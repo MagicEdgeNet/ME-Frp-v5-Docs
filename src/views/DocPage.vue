@@ -135,7 +135,7 @@ onBeforeUnmount(() => {
 .docs-body-column { min-width: 0; }
 .docs-breadcrumb { margin-bottom: 20px; font-size: 14px; color: var(--docs-muted); }
 a { color: var(--docs-accent); }
-.docs-outline { position: sticky; top: 77px; align-self: start; max-height: calc(100dvh - 101px); overflow-y: auto; padding-left: 16px; }
+.docs-outline { position: sticky; top: 88px; align-self: start; max-height: calc(100dvh - 112px); overflow-y: auto; padding-left: 16px; }
 .docs-outline-title { margin-bottom: 12px; font-size: 14px; font-weight: 600; }
 .docs-toc ul { list-style: none; padding: 0; margin: 0; }
 .docs-toc li { margin: 8px 0; line-height: 1.5; font-size: 13px; }

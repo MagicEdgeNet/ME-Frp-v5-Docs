@@ -10,7 +10,7 @@ const root = resolve(import.meta.dirname, '../..')
 const docs = loadDocumentation(root)
 
 test('community pages retain original Markdown headings and have stable generated TOC', () => {
-  assert.equal(docs.pages.length, 22)
+  assert.equal(docs.pages.length, 31)
   for (const page of docs.compiled.values()) {
     assert.equal(new Set(page.allHeadings.map(h => h.id)).size, page.allHeadings.length)
     assert(page.headings.every(h => h.depth >= 2 && h.depth <= 3))

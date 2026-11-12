@@ -9,7 +9,7 @@
         :active-title="activeTitle"
         :scroll-to-heading="scrollToMobileHeading"
       />
-      <div class="docs-body">
+      <div v-if="!isHome" class="docs-body">
         <aside v-if="!isMobile" class="docs-sider" :class="{ 'is-collapsed': collapsed }">
           <div class="docs-sider-scroll">
             <DocsLeftMenu :collapsed="collapsed" />
@@ -32,7 +32,7 @@
           </div>
         </NScrollbar>
       </div>
-      <PullToRefresh target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 108 : 61" />
+      <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 56 : 61" />
     </div>
 
     <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="24" />
@@ -55,6 +55,7 @@ import type { ThemeContext } from '../types/theme'
 
 const route = useRoute()
 
+const isHome = computed(() => route.path === '/')
 const themeCtx = inject<ThemeContext | null>('theme', null)
 const isDarkMode = themeCtx?.isDarkMode ?? ref(false)
 // 沿用首页色板，只改底色 / 边框 / 文字层级，按钮主色仍然是用户组主题
@@ -66,9 +67,9 @@ const isMobile = ref(window.innerWidth <= 768 || window.screen.width <= 768)
 // 顶栏（+ 移动端副导航）固定悬浮，主内容用等高的 padding-top 让出位置
 const contentStyle = computed(() => {
   if (isMobile.value) {
-    return { padding: '16px', paddingTop: `${55 + 48 + 16}px` }
+    return { padding: '0 12px 32px', paddingTop: isHome.value ? '56px' : `${56 + 48 + 12}px` }
   }
-  return { padding: '24px', paddingTop: `${53 + 24}px` }
+  return { padding: isHome.value ? '0 24px 40px' : '24px', paddingTop: isHome.value ? '64px' : '88px' }
 })
 
 const currentTitle = computed(() => {

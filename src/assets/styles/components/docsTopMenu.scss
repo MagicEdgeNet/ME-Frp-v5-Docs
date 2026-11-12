@@ -1,193 +1,46 @@
 @use '../variables' as *;
 
-
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1202;
-    user-select: none;
-    background-color: color-mix(in srgb, var(--n-color-modal, var(--docs-bg, #fff)) 82%, transparent) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(180%);
-    backdrop-filter: blur(14px) saturate(180%);
+.site-header { position: fixed; inset: 0 0 auto; z-index: 1202; border-bottom: 1px solid var(--docs-line); background: color-mix(in srgb, var(--docs-bg) 88%, transparent); backdrop-filter: blur(16px) saturate(150%); }
+.header-inner { width: min(100% - 40px, 1360px); height: 64px; margin: 0 auto; display: flex; align-items: center; gap: 28px; }
+.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--docs-ink); font-weight: 700; letter-spacing: .01em; white-space: nowrap; }
+.brand small { margin-left: 4px; color: var(--docs-muted); font: 600 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .12em; }
+.brand .app-mark { color: var(--docs-accent); }
+.desktop-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
+.desktop-nav a, .panel-link, .github-link { color: var(--docs-muted); text-decoration: none; transition: color 160ms ease, background 160ms ease; }
+.desktop-nav a { padding: 8px 10px; border-radius: 6px; font-size: 13px; }
+.desktop-nav a:hover, .desktop-nav a.router-link-active { color: var(--docs-ink); background: var(--docs-surface-muted); }
+.header-tools { display: flex; align-items: center; gap: 10px; }
+.search-trigger { width: 128px; justify-content: space-between; color: var(--docs-muted); border: 1px solid var(--docs-line); }
+.search-trigger :deep(.n-button__content) { width: 100%; justify-content: space-between; }
+kbd { padding: 2px 5px; border: 1px solid var(--docs-line-strong); border-radius: 4px; color: var(--docs-faint); font: 10px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.tool-divider { width: 1px; height: 20px; background: var(--docs-line); }
+.github-link { display: inline-flex; padding: 8px; font-size: 18px; }
+.github-link:hover, .panel-link:hover { color: var(--docs-accent); }
+.panel-link { font-size: 13px; }
+.theme-toggle, .mobile-menu-trigger { color: var(--docs-muted); }
+.mobile-menu-trigger { display: none; }
+.mobile-nav { display: none; }
+.search-dialog { width: min(640px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--docs-line); border-radius: 10px; background: var(--docs-bg); box-shadow: 0 24px 70px rgba(15, 23, 42, .22); }
+.search-input-row { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--docs-line); color: var(--docs-muted); }
+.search-input-row input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--docs-ink); font-size: 16px; }
+.search-result-list { max-height: min(60dvh, 480px); overflow: auto; padding: 8px; }
+.search-result-list a { display: block; padding: 12px; border-radius: 6px; color: var(--docs-ink); text-decoration: none; }
+.search-result-list a:hover { background: var(--docs-surface-muted); }
+.search-result-list a span, .search-result-list a small { display: block; }
+.search-result-list a span { font-weight: 600; }
+.search-result-list a small, .search-result-list p { margin: 5px 0 0; color: var(--docs-muted); font-size: 12px; }
+.search-result-list p { padding: 18px; }
+@media (max-width: 1050px) { .desktop-nav { gap: 0; } .desktop-nav a { padding-inline: 7px; } .search-trigger { width: 42px; } .search-trigger span, .search-trigger kbd, .panel-link { display: none; } }
+@media (max-width: 768px) {
+  .header-inner { width: calc(100% - 24px); height: 56px; gap: 12px; }
+  .desktop-nav, .github-link, .tool-divider { display: none; }
+  .header-tools { margin-left: auto; gap: 3px; }
+  .search-trigger { width: 40px; border: 0; }
+  .search-trigger :deep(.n-button__content) { justify-content: center; }
+  .mobile-menu-trigger { display: inline-flex; }
+  .mobile-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; padding: 10px 12px 14px; border-top: 1px solid var(--docs-line); background: var(--docs-bg); }
+  .mobile-nav a, .mobile-nav button { padding: 11px 12px; border: 0; border-radius: 6px; background: transparent; color: var(--docs-ink); text-align: left; text-decoration: none; font: inherit; }
+  .mobile-nav a:hover, .mobile-nav button:hover { background: var(--docs-surface-muted); }
+  .mobile-nav button { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 }
-
-.navbar-content {
-    margin: 0 auto;
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-}
-
-.logo {
-    flex: 1;
-}
-
-.logo-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-
-.logo h2 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    background: $text-color;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}
-
-.desktop-menu {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.pc-navbar {
-    height: 53px;
-    box-sizing: border-box;
-
-    .navbar-content {
-        height: 100%;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
-    @media (max-width: 768px), (max-device-width: 768px) {
-        display: none;
-    }
-}
-
-.mobile-navbar {
-    display: none;
-
-    @media (max-width: 768px), (max-device-width: 768px) {
-        display: block;
-    }
-}
-
-.mobile-header {
-    padding: 0 16px;
-    height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.mobile-menu-trigger {
-    width: 44px;
-    min-width: 44px;
-    height: 44px;
-}
-
-.docs-mobile-nav-scroll {
-    width: min(320px, calc(100vw - 32px));
-    max-height: min(70dvh, 600px);
-}
-
-.docs-mobile-nav-menu {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    flex-direction: column;
-}
-
-.docs-mobile-nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px 12px 0;
-}
-
-.docs-mobile-nav-links :deep(.n-button) {
-    width: 100%;
-    min-height: 40px;
-    justify-content: flex-start;
-    padding: 0 12px;
-}
-
-.docs-mobile-nav-menu :deep(.n-divider) { margin: 8px 0 4px; }
-.docs-mobile-nav-menu :deep(.n-menu) { --n-item-height: 42px; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content) { border-radius: 0; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content--selected) { font-weight: 600; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content-header) { align-items: center; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content__icon) { margin-right: 10px; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content__arrow) { margin-left: auto; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content__icon),
-.docs-mobile-nav-menu :deep(.n-menu-item-content-header) { min-width: 0; }
-.docs-mobile-nav-menu :deep(.n-menu-item-content-header a) { overflow: hidden; text-overflow: ellipsis; }
-
-
-/* 移动端适配 */
-@media (max-width: 768px), (max-device-width: 768px) {
-    .navbar-content {
-        padding: 12px 16px;
-        gap: 8px;
-    }
-
-    .logo {
-        flex: none;
-    }
-
-    .logo h2 {
-        font-size: 0.9rem;
-        background: $text-color;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-        transform: translateZ(0);
-        backface-visibility: hidden;
-    }
-}
-
-.nav-links {
-    .n-button {
-        font-size: 0.95rem;
-        border-radius: 7px;
-    }
-}
-
-.mobile-menu {
-    min-width: 160px;
-    margin: -8px -16px;
-}
-
-
-// 标题相关样式
-.logo-and-title {
-    display: flex;
-    align-items: left;
-    margin-right: auto;
-
-    .title-divider {
-        height: 10px;
-        width: 1px;
-        background-color: var(--border-color);
-        margin: 0 12px;
-    }
-}
-
-// 移动端标题样式
-.mobile-title {
-    margin-left: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-color-1);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-}
+@media (prefers-reduced-motion: reduce) { .desktop-nav a, .github-link, .panel-link { transition: none; } }
