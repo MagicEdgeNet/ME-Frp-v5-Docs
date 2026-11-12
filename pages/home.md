@@ -10,13 +10,16 @@ ME Frp 是基于 Frp 的内网穿透服务。它让运行在家中、办公室�
 
 ## 工作方式
 
-一台位于内网的设备运行客户端 `frpc`，主动连接 ME Frp 节点上的服务端 `frps`。创建隧道后，访问者连接分配的公网地址和端口，节点再把流量转发到你的本地服务。
+一台位于内网的设备运行客户端 `Frpc`，主动连接 ME Frp 节点上的服务端 `Frps`。创建隧道后，访问者连接分配的公网地址和端口，节点再把流量转发到你的本地服务。
 
-```text
-访问者 ── 公网地址:端口 ──> ME Frp 节点 (frps) ── 加密连接 ──> 你的设备 (frpc) ──> 本地服务
+```mermaid
+flowchart LR
+  visitor[访问者] -->|公网地址与端口| node[ME Frp 节点<br/>Frps]
+  node <-->|已建立的连接| client[你的设备<br/>Frpc]
+  client -->|本地 IP 与端口| service[本地服务]
 ```
 
-[了解内网穿透](/docs/concepts/overview)　[认识 frpc 和 frps](/docs/concepts/frpc-frps)
+[了解内网穿透](/docs/concepts/overview)　[认识 Frpc 和 Frps](/docs/concepts/frpc-frps)
 
 ## 选择穿透类型
 
@@ -60,7 +63,7 @@ ME Frp 是基于 Frp 的内网穿透服务。它让运行在家中、办公室�
 
 ## 常见问题
 
-- [服务端 `frps` 和客户端 `frpc` 有什么区别？](/docs/concepts/frpc-frps)
+- [服务端 `Frps` 和客户端 `Frpc` 有什么区别？](/docs/concepts/frpc-frps)
 - [TCP、UDP、HTTP 和 HTTPS 应该怎么选？](/docs/concepts/protocols)
 - [外网无法访问我的服务怎么办？](/docs/faq/site-inaccessible)
 - [如何快速定位启动报错？](/docs/errors)

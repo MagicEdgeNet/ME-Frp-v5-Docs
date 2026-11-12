@@ -119,7 +119,7 @@ function mountTables(container: HTMLElement, context: AppContext, mounted: HTMLE
 function mountCodeBlocks(container: HTMLElement, context: AppContext, hljs: HLJSApi, mounted: HTMLElement[]) {
   for (const fallback of container.querySelectorAll<HTMLPreElement>('pre')) {
     const codeEl = fallback.querySelector('code')
-    if (!codeEl) continue
+    if (!codeEl || codeEl.classList.contains('language-mermaid')) continue
     const code = codeEl.textContent || ''
     const language = [...codeEl.classList].find(name => name.startsWith('language-'))?.slice(9) || ''
     const existingWrapper = fallback.parentElement?.classList.contains('docs-code-block')

@@ -1,5 +1,25 @@
 @use '../variables' as *;
 
+.mermaid-diagram {
+  max-width: 100%;
+  margin: 20px 0;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--docs-line, #dce2e9);
+  border-radius: 6px;
+  background: var(--docs-bg, #fff);
+  color: var(--docs-ink, #162235);
+  text-align: center;
+  touch-action: pan-x pan-y;
+
+  svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+  .mermaid-source { margin-top: 12px; border-top: 1px solid var(--docs-line, #dce2e9); text-align: left; }
+  .mermaid-source summary { padding-top: 9px; color: var(--docs-muted, #667085); font-size: 12px; cursor: pointer; }
+  .mermaid-source pre { max-height: 300px; overflow: auto; }
+}
+
+.markdown-container.dark-theme .mermaid-diagram { --docs-bg: #151c26; --docs-ink: #f3f6fa; --docs-line: #2a3645; --docs-muted: #a7b2c1; }
+
 .loading-container {
   display: flex;
   min-height: 200px;

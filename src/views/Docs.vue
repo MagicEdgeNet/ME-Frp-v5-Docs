@@ -32,7 +32,7 @@
           </div>
         </NScrollbar>
       </div>
-      <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 56 : 61" />
+      <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 50 : 59" />
     </div>
 
     <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="24" />
@@ -67,9 +67,9 @@ const isMobile = ref(window.innerWidth <= 768 || window.screen.width <= 768)
 // 顶栏（+ 移动端副导航）固定悬浮，主内容用等高的 padding-top 让出位置
 const contentStyle = computed(() => {
   if (isMobile.value) {
-    return { padding: '0 12px 32px', paddingTop: isHome.value ? '56px' : `${56 + 48 + 12}px` }
+    return { padding: '0 12px 32px', paddingTop: isHome.value ? '50px' : '60px' }
   }
-  return { padding: isHome.value ? '0 24px 40px' : '24px', paddingTop: isHome.value ? '64px' : '88px' }
+  return { padding: isHome.value ? '0 24px 40px' : '24px', paddingTop: isHome.value ? '59px' : '24px' }
 })
 
 const currentTitle = computed(() => {

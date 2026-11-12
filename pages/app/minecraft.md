@@ -105,7 +105,7 @@
 
 ### 配置隧道
 
-创建/编辑隧道时，在**高级配置**中设置 Proxy Protocol 后，frpc 就会在请求本地服务时应用 Proxy Protocol 协议：
+创建/编辑隧道时，在**高级配置**中设置 Proxy Protocol 后，Frpc 就会在请求本地服务时应用 Proxy Protocol 协议：
 
 ![高级配置-Proxy Protocol](https://img.fastmirror.net/s/2025/11/16/6918b3a3b7d0f.png)
 

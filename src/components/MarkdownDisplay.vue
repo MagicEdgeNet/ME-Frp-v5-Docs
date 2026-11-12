@@ -110,6 +110,7 @@ import { enhanceDocumentWidgets } from '../shared/docsWidgets'
 
 let hljs: HLJSApi
 let widgetCleanup: (() => void) | undefined
+let mermaidPromise: Promise<typeof import('mermaid')> | undefined
 
 // 声明 window 类型, 使 `$message` 可用
 declare const window: Window;
@@ -983,8 +984,51 @@ const handleImageKeydown = (e: KeyboardEvent) => {
   }
 };
 
+const renderMermaidDiagrams = async () => {
+  const root = contentRef.value
+  if (!root) return
+  try {
+    const codes = Array.from(root.querySelectorAll<HTMLElement>('pre > code.language-mermaid'))
+    const diagrams = Array.from(root.querySelectorAll<HTMLElement>('.mermaid-diagram[data-source]'))
+    if (!codes.length && !diagrams.length) return
+    mermaidPromise ??= import('mermaid')
+    const { default: mermaid } = await mermaidPromise
+    const dark = themeStore.isDarkMode.value
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: dark ? 'dark' : 'default', htmlLabels: false, flowchart: { curve: 'basis' } })
+    const items = [...diagrams.map(element => ({ element, source: element.dataset.source || '', code: undefined as HTMLElement | undefined })),
+      ...codes.map(code => ({ element: undefined as HTMLElement | undefined, source: code.textContent || '', code }))]
+    for (const item of items) {
+      const id = `mefrp-mermaid-${crypto.randomUUID()}`
+      const { svg } = await mermaid.render(id, item.source)
+      const safeSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
+      const figure = document.createElement('div')
+      figure.className = 'mermaid-diagram'
+      figure.dataset.source = item.source
+      figure.setAttribute('role', 'img')
+      figure.setAttribute('aria-label', 'Mermaid 流程图')
+      figure.innerHTML = safeSvg
+      const sourceDetails = document.createElement('details')
+      sourceDetails.className = 'mermaid-source'
+      const summary = document.createElement('summary')
+      summary.textContent = '查看 Mermaid 源码'
+      const pre = document.createElement('pre')
+      const sourceCode = document.createElement('code')
+      sourceCode.className = 'language-mermaid'
+      sourceCode.textContent = item.source
+      pre.append(sourceCode)
+      sourceDetails.replaceChildren(summary, pre)
+      figure.append(sourceDetails)
+      if (item.code) (item.code.closest('figure.docs-code-block') || item.code.closest('pre'))?.replaceWith(figure)
+      else item.element?.replaceWith(figure)
+    }
+  } catch (renderError) {
+    console.error('Mermaid 图表渲染失败:', renderError)
+  }
+}
+
 // Mount real Naive UI widgets once for each rendered document.
 const renderNaiveUIComponents = () => {
+  void renderMermaidDiagrams()
   const currentContent = contentRef.value
   if (!currentContent || !hljs || currentContent.getAttribute('data-code-rendered') === 'true') return
   const appContext = markdownAppContext
@@ -1058,6 +1102,8 @@ watch(() => renderedContent.value, () => {
 
 // 监听主题变化, 更新代码块样式
 watch(() => themeStore.isDarkMode.value, () => {
+
+  void renderMermaidDiagrams()
 
   // 调用通用函数更新 CSS 变量
   setupThemeVariables();

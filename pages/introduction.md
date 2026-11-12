@@ -11,15 +11,20 @@ ME Frp 为运行在私有网络中的服务提供公网访问入口。它面向�
 ## 一条隧道的组成
 
 - **本地服务**：实际运行在你的设备上的程序，例如 SSH 服务或游戏服务器。
-- **frpc 客户端**：运行在同一内网设备上，负责读取配置并连接节点。
-- **ME Frp 节点**：拥有公网接入能力，运行服务端 `frps` 并提供转发入口。
+- **Frpc 客户端**：运行在同一内网设备上，负责读取配置并连接节点。
+- **ME Frp 节点**：拥有公网接入能力，运行服务端 `Frps` 并提供转发入口。
 - **访问入口**：域名、远程端口或受保护的访问方式，供客户端连接。
 
-```text
-访问者 -> 节点公网入口 -> frps -> frpc 连接 -> 本地 IP:端口 -> 本地服务
+```mermaid
+flowchart LR
+  visitor[访问者] --> public[节点公网入口]
+  public --> server[Frps]
+  server --> client[Frpc 连接]
+  client --> target[本地 IP 与端口]
+  target --> service[本地服务]
 ```
 
-[查看 frpc 与 frps 的关系](/docs/concepts/frpc-frps)
+[查看 Frpc 与 Frps 的关系](/docs/concepts/frpc-frps)
 
 ## 基本使用流程
 
