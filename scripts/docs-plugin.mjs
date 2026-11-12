@@ -61,7 +61,6 @@ export function docsPlugin() {
       contentRoot = root
       refresh()
     },
-    buildStart() { refresh() },
     configureServer(server) {
       server.watcher.add(contentRoot)
       server.watcher.on('change', path => {
