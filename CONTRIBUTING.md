@@ -5,15 +5,15 @@
 ## 本地预览
 
 ```bash
-git clone --recurse-submodules https://github.com/MagicEdgeNet/ME-Frp-v5-Frontend.git
-cd ME-Frp-v5-Frontend
-# 使用已集成社区文档的分支；在该集成合入默认分支前可检出 feat/autoTLS-and-security。
-git submodule update --init --recursive
+git clone https://github.com/MagicEdgeNet/ME-Frp-v5-Docs.git
+cd ME-Frp-v5-Docs
+# 独立站尚未合并到默认分支时，切换到 feat/standalone-docs。
+git switch feat/standalone-docs
 pnpm install
 pnpm run dev
 ```
 
-编辑 `docs-content/pages/` 或 `docs-content/manifest.json`。不要直接修改生成的 `dist/`、`/_docs-data/` 或 sitemap 文档条目。
+需要 Node.js 24+ 和 pnpm 10+。直接编辑本仓库的 `pages/`、`manifest.json` 或 `assets/`；无需克隆前端或配置 API。不要直接修改生成的 `dist/`、`/_docs-data/` 或 sitemap。
 
 直接克隆本仓库也可用 Node.js 检查结构：
 
@@ -32,7 +32,8 @@ node scripts/check.mjs
 - 内部文档链接使用 `/docs/usage/common` 这样的稳定站点路径；不带 `.md`。
 - 本页锚点与跨页锚点从标题生成；相同标题依次追加 `-2`、`-3`。修改标题后检查入链。
 - 新图片放入 `assets/`，用 `/docs-assets/截图名.png` 引用，写清楚替代文本。文件名保持简单，压缩后再提交。
-- 本仓库不决定主站部署。修改合并后，维护者还需要更新前端的 submodule 提交指针并重新构建发布。
+- 文档站部署到 `docs.mefrp.com`，构建产物为 `dist/`。提交后 CI 校验内容、单测及构建；主站无需同步 submodule 才能构建独立站。
+- 代码采用 MIT，原创文档内容除非另有说明采用 CC BY-NC-SA 4.0；提交前确认你有权按相应许可贡献，第三方资源保留原许可和署名。
 
 ## 提交 PR
 
