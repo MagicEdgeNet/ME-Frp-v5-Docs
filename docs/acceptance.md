@@ -1,6 +1,6 @@
 # 独立文档站本地验收记录
 
-验收日期：2026-11-11。范围：Docs 的 `feat/standalone-docs` 工作区以及主前端 `feat/autoTLS-and-security` 的文档入口兼容。结果对应未提交的当前工作区，不代表线上发布状态。
+验收日期：2026-11-11。范围：Docs 的 `feat/standalone-docs` 工作区以及主前端 `feat/autoTLS-and-security` 的文档入口兼容。结果对应 Docs `feat/standalone-docs` 与官网 `feat/autoTLS-and-security` 已推送的当前提交，不代表线上发布状态。
 
 ## 环境与结果
 
@@ -36,8 +36,8 @@
 
 ## 未完成/限制
 
-- 迁移与主站跳转代码尚未提交、推送；仅许可分离提交 `2a0e4f9` 已推送到 Docs main。
-- 未进行线上部署、DNS/TLS 配置或公开域名可用性验收；GitHub Actions 配置已更新，但尚未在远端执行。
+- 迁移与主站跳转代码已分别提交并推送：Docs `fb9ed1e` / `c60afb0`，官网 `9ea898b` / `d2ccdc8`。
+- 尚未进行线上部署、DNS/TLS 配置或公开域名可用性验收；GitHub Actions 配置已更新，但尚未在远端执行。
 - 图片使用本地网络拦截夹具验证交互，未验收第三方图床的真实可用性/CORS 策略。
 - 未在实体手机或真实 Safari 上验收。
 - 主包约 866 KB（gzip 约 256 KB），构建有超过 500 KB 的体积提示；不影响当前构建与功能验收，可后续拆包优化。
