@@ -12,7 +12,7 @@
         { "path": "concepts/overview", "title": "内网穿透是什么", "navTitle": "内网穿透概念", "icon": "GitNetworkOutline", "description": "从网络位置、节点和连接关系理解内网穿透的工作方式。" },
         { "path": "concepts/frpc-frps", "title": "Frpc 与 Frps", "icon": "ServerOutline", "description": "理解 Frpc 客户端、Frps 服务端、控制连接和数据连接之间的关系。" },
         { "path": "concepts/tunnel", "title": "隧道与代理", "icon": "GitNetworkOutline", "description": "认识隧道、代理、节点、端口、域名和流量等 ME Frp 核心概念。" },
-        { "path": "concepts/protocols", "title": "穿透类型", "icon": "CodeSlashOutline", "description": "比较 TCP、UDP、HTTP、HTTPS、STCP、XTCP 和 SUDP 的用途与选择方式。" },
+        { "path": "concepts/protocols", "title": "穿透类型", "icon": "CodeSlashOutline", "description": "了解 ME Frp 当前支持的 TCP、UDP、HTTP 和 HTTPS，并确认 STCP、XTCP、SUDP 暂不支持。" },
         { "path": "concepts/terms", "title": "术语表", "icon": "DocumentTextOutline", "description": "ME Frp 和 Frp 文档中常见术语的快速定义与相互关系。" }
       ]
     },

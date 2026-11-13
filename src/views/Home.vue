@@ -21,22 +21,6 @@
         </nav>
       </section>
 
-      <section class="portal-search" aria-label="搜索文档">
-        <label for="portal-search-input">在文档中查找</label>
-        <div class="search-field">
-          <NIcon :component="SearchOutline" />
-          <input id="portal-search-input" v-model="query" type="search" autocomplete="off" placeholder="试试搜索 Frpc、TCP、端口映射或 Minecraft" role="combobox" aria-autocomplete="list" :aria-expanded="Boolean(query.trim())" aria-controls="portal-search-results" @keydown="onSearchKeydown" />
-          <kbd>Enter</kbd>
-        </div>
-        <div v-if="query.trim()" id="portal-search-results" class="search-results" role="listbox" aria-label="搜索结果">
-          <a v-for="(page, index) in searchResults" :key="page.path" :href="docPath(page.path)" role="option" :aria-selected="selectedResult === index" @mouseenter="selectedResult = index">
-            <span class="result-title">{{ page.navTitle || page.title }}</span><span class="result-description">{{ page.description }}</span><NIcon :component="ArrowForwardOutline" />
-          </a>
-          <p v-if="!searchResults.length" role="status">没有匹配的文档，试试更短的关键词。</p>
-        </div>
-        <p class="search-hint">按标题与摘要即时筛选 · {{ searchablePages.length }} 篇文档</p>
-      </section>
-
       <section class="portal-section protocols-section">
         <div class="section-heading"><div><span class="section-label">连接类型</span><h2>按服务选择穿透方式</h2></div><a :href="docPath('concepts/protocols')">了解全部类型 <NIcon :component="ArrowForwardOutline" /></a></div>
         <div class="protocol-list">
@@ -44,6 +28,7 @@
             <code>{{ item.name }}</code><span>{{ item.use }}</span><small>{{ item.example }}</small><NIcon :component="ArrowForwardOutline" />
           </a>
         </div>
+        <p class="protocol-notice"><strong>暂不支持：</strong>STCP、SUDP、XTCP 当前不可在 ME Frp 使用。<a :href="docPath('concepts/protocols')">查看穿透类型说明</a></p>
       </section>
 
       <section class="portal-section library-section">
@@ -67,23 +52,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, watch, type Component } from 'vue'
+import { inject, ref, type Component } from 'vue'
 import { NButton, NIcon } from 'naive-ui'
-import { AlertCircleOutline, AppsOutline, ArrowForwardOutline, BookOutline, CodeSlashOutline, DesktopOutline, DocumentLockOutline, DocumentTextOutline, FolderOutline, GameControllerOutline, GlobeOutline, HelpCircleOutline, InformationCircleOutline, PersonOutline, PhonePortraitOutline, RocketOutline, SearchOutline, ServerOutline, ShieldCheckmarkOutline, TerminalOutline, WifiOutline } from '@vicons/ionicons5'
+import { AlertCircleOutline, AppsOutline, ArrowForwardOutline, BookOutline, CodeSlashOutline, DesktopOutline, DocumentLockOutline, DocumentTextOutline, FolderOutline, GameControllerOutline, GlobeOutline, HelpCircleOutline, InformationCircleOutline, PersonOutline, PhonePortraitOutline, RocketOutline, ServerOutline, ShieldCheckmarkOutline, TerminalOutline, WifiOutline } from '@vicons/ionicons5'
 import type { ThemeContext } from '../types/theme'
-import { docGroups, docPages, docPath } from '../shared/docs'
-import { searchDocuments } from '../shared/search'
+import { docGroups, docPath } from '../shared/docs'
 import DocsTopMenu from '../components/DocsTopMenu.vue'
 import HomeFooter from '../components/HomeFooter.vue'
 
 const theme = inject<ThemeContext | null>('theme', null)
 const isDarkMode = theme?.isDarkMode ?? ref(false)
-const query = ref('')
-const selectedResult = ref(0)
 const groups = docGroups.filter(group => group.id !== 'maintenance')
-const searchablePages = docPages.filter(page => page.index !== false)
-const searchResults = computed(() => searchDocuments(query.value, searchablePages).slice(0, 7))
-watch(query, () => { selectedResult.value = 0 })
 const iconMap: Record<string, Component> = { AppsOutline, AlertCircleOutline, BookOutline, CodeSlashOutline, DocumentLockOutline, DocumentTextOutline, FolderOutline, GameControllerOutline, GlobeOutline, HelpCircleOutline, InformationCircleOutline, PhonePortraitOutline, RocketOutline, ShieldCheckmarkOutline, TerminalOutline, WifiOutline, PersonOutline, DesktopOutline, ServerOutline }
 const iconFor = (name?: string) => iconMap[name || ''] || DocumentTextOutline
 const learningPath = [
@@ -95,14 +74,7 @@ const protocols = [
   { name: 'TCP', use: '通用连接', example: 'SSH · RDP · Minecraft' },
   { name: 'UDP', use: '实时数据报', example: '游戏 · 语音' },
   { name: 'HTTP / HTTPS', use: '网站和 API', example: 'Web 服务 · 控制台' },
-  { name: 'STCP / XTCP / SUDP', use: '受限或点对点连接', example: '私有服务 · 直连场景' },
 ]
-function onSearchKeydown(event: KeyboardEvent) {
-  if (event.key === 'ArrowDown' && searchResults.value.length) { event.preventDefault(); selectedResult.value = (selectedResult.value + 1) % searchResults.value.length }
-  else if (event.key === 'ArrowUp' && searchResults.value.length) { event.preventDefault(); selectedResult.value = (selectedResult.value - 1 + searchResults.value.length) % searchResults.value.length }
-  else if (event.key === 'Enter' && searchResults.value[selectedResult.value]) location.href = docPath(searchResults.value[selectedResult.value].path)
-  else if (event.key === 'Escape') query.value = ''
-}
 </script>
 
 <style lang="scss" scoped>

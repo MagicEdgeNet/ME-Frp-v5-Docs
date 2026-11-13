@@ -29,11 +29,12 @@ flowchart LR
 | UDP | UDP 服务 | 部分游戏、语音和实时应用 |
 | HTTP | 网站和 HTTP 服务 | 本地开发站点、Web 管理界面 |
 | HTTPS | TLS 网站服务 | 使用域名访问 HTTPS 服务 |
-| STCP | 需要访问密钥的 TCP 服务 | 仅授权设备可以访问的服务 |
-| XTCP | 支持时尝试点对点连接 | 两端网络条件允许的直连传输 |
-| SUDP | 需要密钥的 UDP 服务 | 限定访问方的 UDP 应用 |
 
-各类型的可用性受节点、账号和服务端配置影响。先查看[完整类型说明](/docs/concepts/protocols)，或按应用查找[场景配置](/docs/app/minecraft)。
+:::warning 当前暂不支持
+STCP、XTCP 和 SUDP 属于 Frp 上游类型，ME Frp 当前暂不支持，不能在本平台创建或使用。请勿将它们作为 ME Frp 的可选穿透类型。
+:::
+
+请以管理面板当前可选类型为准。查看[完整穿透类型说明](/docs/concepts/protocols)，或按应用查找[场景配置](/docs/app/minecraft)。
 
 ## 从这里开始
 
@@ -68,7 +69,7 @@ flowchart LR
 - [外网无法访问我的服务怎么办？](/docs/faq/site-inaccessible)
 - [如何快速定位启动报错？](/docs/errors)
 
-[搜索所有文档](/docs/usage/common)
+[浏览全部文档](/docs/usage/common)
 
 ## 准备好创建隧道了吗？
 
