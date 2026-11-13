@@ -994,7 +994,7 @@ const renderMermaidDiagrams = async () => {
     mermaidPromise ??= import('mermaid')
     const { default: mermaid } = await mermaidPromise
     const dark = themeStore.isDarkMode.value
-    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: dark ? 'dark' : 'default', htmlLabels: false, flowchart: { curve: 'basis' } })
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: dark ? 'dark' : 'default', layout: 'dagre', htmlLabels: false, flowchart: { curve: 'basis' } })
     const items = [...diagrams.map(element => ({ element, source: element.dataset.source || '', code: undefined as HTMLElement | undefined })),
       ...codes.map(code => ({ element: undefined as HTMLElement | undefined, source: code.textContent || '', code }))]
     for (const item of items) {
