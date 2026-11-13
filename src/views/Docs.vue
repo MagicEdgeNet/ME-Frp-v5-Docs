@@ -14,10 +14,10 @@
           <div class="docs-sider-scroll">
             <DocsLeftMenu :collapsed="collapsed" />
           </div>
-          <button class="docs-sider-trigger" type="button" :aria-label="collapsed ? '展开侧栏' : '收起侧栏'"
+          <NButton class="docs-sider-trigger" quaternary circle size="small" :aria-label="collapsed ? '展开侧栏' : '收起侧栏'"
             :aria-expanded="!collapsed" @click="collapsed = !collapsed">
             <NIcon :component="collapsed ? ChevronForwardOutline : ChevronBackOutline" :size="14" />
-          </button>
+          </NButton>
         </aside>
         <NScrollbar ref="mainScrollRef" class="docs-scroll" :x-scrollable="false" :native-scrollbar="false">
           <div class="docs-main" :style="contentStyle">
@@ -32,10 +32,14 @@
           </div>
         </NScrollbar>
       </div>
-      <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 50 : 59" />
+      <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 98 : 59" />
     </div>
 
-    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="24" />
+    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="24">
+      <NButton quaternary circle class="docs-back-top-button" aria-label="回到顶部">
+        <NIcon :component="ArrowUpOutline" />
+      </NButton>
+    </NBackTop>
 
   </NConfigProvider>
 </template>
@@ -43,8 +47,8 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router'
 import { ref, computed, inject, onMounted, onUnmounted, watch } from 'vue'
-import { NConfigProvider, NScrollbar, NIcon, NBackTop } from 'naive-ui'
-import { ChevronBackOutline, ChevronForwardOutline } from '@vicons/ionicons5'
+import { NButton, NConfigProvider, NScrollbar, NIcon, NBackTop } from 'naive-ui'
+import { ArrowUpOutline, ChevronBackOutline, ChevronForwardOutline } from '@vicons/ionicons5'
 import DocsTopMenu from '../components/DocsTopMenu.vue'
 import PullToRefresh from '../components/PullToRefresh.vue'
 import DocsLeftMenu from '../components/DocsLeftMenu.vue'
@@ -67,7 +71,7 @@ const isMobile = ref(window.innerWidth <= 768 || window.screen.width <= 768)
 // 顶栏（+ 移动端副导航）固定悬浮，主内容用等高的 padding-top 让出位置
 const contentStyle = computed(() => {
   if (isMobile.value) {
-    return { padding: '0 12px 32px', paddingTop: isHome.value ? '50px' : '60px' }
+    return { padding: '0 12px 32px', paddingTop: '98px' }
   }
   return { padding: isHome.value ? '0 24px 40px' : '24px', paddingTop: isHome.value ? '59px' : '24px' }
 })
@@ -130,11 +134,35 @@ onUnmounted(() => {
 
 :global(.docs-back-top) {
   box-sizing: border-box;
-  width: 40px !important;
-  min-width: 40px !important;
-  height: 40px !important;
-  padding: 0 !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
   border-radius: 50%;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+:global(.docs-back-top-button.n-button) {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--n-border-color, #b6c3d2);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--n-color-popover, #fff) 94%, transparent) !important;
+  color: var(--n-text-color, #162235) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--n-text-color, #162235) 24%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+}
+
+:global(.docs-back-top-button.n-button:hover) {
+  background: var(--n-color-hover, #e7efff) !important;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--n-text-color, #162235) 30%, transparent);
+}
+
+:global(.docs-back-top-button.n-button:focus-visible) {
+  outline: 2px solid var(--n-color-target, #2563eb);
+  outline-offset: 3px;
 }
 
 .docs-content {

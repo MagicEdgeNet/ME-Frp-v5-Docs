@@ -1,8 +1,8 @@
 <template>
   <div v-if="isMobile" ref="barRef" class="docs-sub-menu">
-    <button
+    <NButton
       class="toc-trigger"
-      type="button"
+      text
       :aria-expanded="tocOpen"
       aria-controls="mobile-docs-toc"
       @click="tocOpen = !tocOpen"
@@ -11,12 +11,13 @@
       <span class="toc-trigger-label">{{ props.activeTitle || props.title || currentTitle }}</span>
       <span class="toc-trigger-hint">本页目录</span>
       <NIcon :component="tocOpen ? ChevronUpOutline : ChevronDownOutline" :size="18" />
-    </button>
+    </NButton>
   </div>
   <NDrawer
     v-if="isMobile"
     v-model:show="tocOpen"
     class="mobile-toc-drawer-panel"
+    :class="{ 'is-dark': isDarkMode }"
     placement="top"
     :height="drawerHeight"
     :z-index="1200"
@@ -43,10 +44,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { NAnchor, NAnchorLink, NDrawer, NDrawerContent, NIcon } from 'naive-ui'
+import { NAnchor, NAnchorLink, NButton, NDrawer, NDrawerContent, NIcon } from 'naive-ui'
 import { ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
+import type { ThemeContext } from '../types/theme'
 import type { PropType } from 'vue'
 
 type DocHeading = { id: string; text: string; depth: number }
@@ -62,11 +64,12 @@ const props = defineProps({
 const isMobile = ref(window.innerWidth <= 768 || window.screen.width <= 768)
 const tocOpen = ref(false)
 const barRef = ref<HTMLElement | null>(null)
+const isDarkMode = inject<ThemeContext | null>('theme', null)?.isDarkMode ?? ref(false)
 const drawerTop = ref(104)
 const route = useRoute()
 const currentTitle = computed(() => (route.meta.title as string) || '文档')
 const viewportHeight = ref(window.innerHeight)
-const drawerHeight = computed(() => Math.min(440, Math.max(120, viewportHeight.value - drawerTop.value - 64), Math.max(120, props.headings.length * 40 + 20)))
+const drawerHeight = computed(() => Math.max(120, Math.min(640, viewportHeight.value - drawerTop.value - 24)))
 
 const updateDrawerTop = () => {
   if (barRef.value) drawerTop.value = Math.round(barRef.value.getBoundingClientRect().bottom)

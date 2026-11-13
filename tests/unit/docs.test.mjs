@@ -27,6 +27,7 @@ test('search index contains every public document body but excludes unlisted tes
   const ssh = index.find(page => page.path === 'app/ssh')
   assert(ssh)
   assert.match(ssh.text, /基于密钥/)
+  assert(ssh.text.includes('\n'), 'Paragraph boundaries are preserved for passage-centered snippets')
   assert(!ssh.text.includes('docs-code-block'))
 })
 
@@ -41,6 +42,20 @@ test('search ranks titles above body text and requires every query term', () => 
   assert(results[0].score > results[1].score)
   assert.match(results[1].snippet, /SSH access with secure credentials/)
   assert.deepEqual(searchDocuments('ssh missing', documents), [])
+})
+
+test('search returns distinct keyword-centered snippets for multiple matching passages', () => {
+  const document = {
+    path: 'multi-passage',
+    title: 'Connection guide',
+    description: 'Connection summary',
+    text: 'First paragraph explains connection reuse in detail.\nSecond paragraph covers secure connection reuse and recovery.'
+  }
+  const results = searchDocuments('connection', [document])
+  assert.equal(results.length, 2)
+  assert.notEqual(results[0].key, results[1].key)
+  assert(results.every(result => result.snippet.toLocaleLowerCase().includes('connection')))
+  assert.notEqual(results[0].snippet, results[1].snippet)
 })
 
 test('SEO metadata is unique and stays aligned for home, documents and 404 routes', () => {

@@ -10,75 +10,21 @@
       v-html="renderedContent"></div>
 
     <!-- 图片查看模态框 -->
-    <NModal v-model:show="showImageModal" :mask-closable="true"
-      style="width: min(96vw, 1200px); max-height: 92dvh;"
-      :auto-focus="false"
-      preset="card"
-      content-style="padding: 0; max-height: calc(92dvh - 64px); overflow: hidden;"
-      :bordered="true"
-      transform-origin="center"
-      :show-icon="false"
-      :closable="false"
-      class="image-modal">
-      <template #header>
-        <div class="image-toolbar">
-          <div class="image-toolbar">
-            <button class="image-toolbar-btn" @click="rotateImage(-90)" title="向左旋转">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M7.11 8.53L5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42c-.52-.75-.87-1.59-1.01-2.47zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c2.84.48 5 2.94 5 5.91s-2.16 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93s-3.05-7.44-7-7.93z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn" @click="rotateImage(90)" title="向右旋转">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M15.55 5.55L11 1v3.07C7.06 4.56 4 7.92 4 12s3.05 7.44 7 7.93v-2.02c-2.84-.48-5-2.94-5-5.91s2.16-5.43 5-5.91V10l4.55-4.45zM19.93 11c-.17-1.39-.72-2.73-1.62-3.89l-1.42 1.42c.54.75.88 1.6 1.02 2.47h2.02zM13 17.9v2.02c1.39-.17 2.74-.71 3.9-1.61l-1.44-1.44c-.75.54-1.59.89-2.46 1.03zm3.89-2.42l1.42 1.41c.9-1.16 1.45-2.5 1.62-3.89h-2.02c-.14.87-.48 1.72-1.02 2.48z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn" @click="zoomImage(0.1)" title="放大">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                <path fill="currentColor" d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn" @click="zoomImage(-0.1)" title="缩小">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                <path fill="currentColor" d="M7 9h5v1H7z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn" @click="resetImage()" title="重置">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn" @click="downloadImage()" title="下载">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-              </svg>
-            </button>
-            <button class="image-toolbar-btn close-btn" @click="closeImageModal()" title="关闭">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </template>
-      <div class="modal-image-container" @wheel.prevent="handleImageWheel">
-        <div class="image-wrapper">
-          <img
-            :src="modalImage"
-            class="modal-image"
-            alt="查看大图"
-            :style="{
-              transform: `rotate(${imageRotation}deg) scale(${imageScale})`,
-              maxHeight: 'min(72dvh, 720px)',
-              maxWidth: '100%',
-              transition: 'transform 0.3s ease'
-            }"
-          />
+    <NModal v-model:show="showImageModal" class="image-viewer-modal" style="width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh;" :mask-closable="true"
+      :auto-focus="false" :close-on-esc="true" transform-origin="center">
+      <div class="image-viewer-canvas" @pointerdown="handleImagePointerDown" @pointermove="handleImagePointerMove"
+        @pointerup="handleImagePointerEnd" @pointercancel="handleImagePointerEnd" @wheel.prevent="handleImageWheel">
+        <img :src="modalImage" class="modal-image" alt="查看大图" draggable="false" :style="imageTransformStyle" />
+        <div class="image-viewer-toolbar">
+          <NDropdown :options="imageActionOptions" placement="bottom-end" @select="handleImageAction">
+            <NButton quaternary circle class="image-tools-trigger" aria-label="图片操作">
+              <NIcon :component="EllipsisHorizontalOutline" :size="22" />
+            </NButton>
+          </NDropdown>
         </div>
       </div>
     </NModal>
+
 
     <!-- 代码全屏查看模态框 -->
     <NModal v-model:show="showCodeModal" :mask-closable="true" preset="card"
@@ -94,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick, inject, getCurrentInstance } from 'vue'
+import { computed, h, ref, onMounted, onBeforeUnmount, watch, nextTick, inject, getCurrentInstance } from 'vue'
 import type { ThemeContext } from '../types/theme'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -102,10 +48,15 @@ import {
   NSpin,
   NCode,
   NModal,
+  NButton,
+  NDropdown,
+  NIcon,
   // useMessage
 } from 'naive-ui'
+import type { DropdownOption } from 'naive-ui'
 import type { Window } from '../types'
 import type { HLJSApi } from 'highlight.js'
+import { AddOutline, ArrowRedoOutline, ArrowUndoOutline, CloseOutline, DownloadOutline, EllipsisHorizontalOutline, RefreshOutline, RemoveOutline } from '@vicons/ionicons5'
 import { enhanceDocumentWidgets } from '../shared/docsWidgets'
 
 let hljs: HLJSApi
@@ -176,6 +127,27 @@ let contentObserver: MutationObserver | null = null
 // 图片处理相关状态
 const imageRotation = ref(0)
 const imageScale = ref(1)
+const imagePan = ref({ x: 0, y: 0 })
+const imageDragging = ref(false)
+const imageTransformStyle = computed(() => ({
+  transform: `translate3d(${imagePan.value.x}px, ${imagePan.value.y}px, 0) rotate(${imageRotation.value}deg) scale(${imageScale.value})`,
+  maxHeight: '90dvh',
+  maxWidth: 'min(90vw, 1400px)',
+  transition: imageDragging.value ? 'none' : 'transform 140ms ease-out'
+}))
+const imageActionOptions: DropdownOption[] = [
+  { label: '向左旋转', key: 'rotate-left', icon: () => h(NIcon, { component: ArrowUndoOutline }) },
+  { label: '向右旋转', key: 'rotate-right', icon: () => h(NIcon, { component: ArrowRedoOutline }) },
+  { label: '放大', key: 'zoom-in', icon: () => h(NIcon, { component: AddOutline }) },
+  { label: '缩小', key: 'zoom-out', icon: () => h(NIcon, { component: RemoveOutline }) },
+  { label: '重置视图', key: 'reset', icon: () => h(NIcon, { component: RefreshOutline }) },
+  { type: 'divider', key: 'image-actions-divider' },
+  { label: '下载原图', key: 'download', icon: () => h(NIcon, { component: DownloadOutline }) },
+  { label: '关闭', key: 'close', icon: () => h(NIcon, { component: CloseOutline }) },
+]
+const pointers = new Map<number, { x: number; y: number }>()
+let dragStart: { id: number; x: number; y: number; panX: number; panY: number } | undefined
+let pinchStart: { distance: number; scale: number } | undefined
 
 const slugifyHeading = (text: string): string => {
   return text
@@ -876,31 +848,92 @@ onMounted(() => {
 
 // 重置图片状态
 const resetImage = () => {
-  imageRotation.value = 0;
-  imageScale.value = 1;
-};
+  imageRotation.value = 0
+  imageScale.value = 1
+  imagePan.value = { x: 0, y: 0 }
+}
+
+const setImageScale = (scale: number, originX = 0, originY = 0) => {
+  const nextScale = Math.max(0.1, Math.min(5, scale))
+  const ratio = nextScale / imageScale.value
+  imagePan.value = {
+    x: originX - (originX - imagePan.value.x) * ratio,
+    y: originY - (originY - imagePan.value.y) * ratio,
+  }
+  imageScale.value = nextScale
+}
+
+const zoomImage = (factor: number) => setImageScale(imageScale.value + factor)
+
+const getImagePoint = (event: PointerEvent | WheelEvent) => {
+  const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  return { x: event.clientX - bounds.left - bounds.width / 2, y: event.clientY - bounds.top - bounds.height / 2 }
+}
+
+const pointerDistance = (values: { x: number; y: number }[]) => Math.hypot(values[0]!.x - values[1]!.x, values[0]!.y - values[1]!.y)
+
+const handleImagePointerDown = (event: PointerEvent) => {
+  if ((event.target as HTMLElement).closest('.image-viewer-toolbar, .n-dropdown-menu')) return
+  event.currentTarget instanceof HTMLElement && event.currentTarget.setPointerCapture(event.pointerId)
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  imageDragging.value = true
+  if (pointers.size === 1) {
+    dragStart = { id: event.pointerId, x: event.clientX, y: event.clientY, panX: imagePan.value.x, panY: imagePan.value.y }
+  } else if (pointers.size === 2) {
+    dragStart = undefined
+    pinchStart = { distance: pointerDistance([...pointers.values()]), scale: imageScale.value }
+  }
+}
+
+const handleImagePointerMove = (event: PointerEvent) => {
+  if (!pointers.has(event.pointerId)) return
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  if (pointers.size >= 2) {
+    const points = [...pointers.values()]
+    if (!pinchStart) pinchStart = { distance: pointerDistance(points), scale: imageScale.value }
+    const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect()
+    const midpoint = { x: (points[0]!.x + points[1]!.x) / 2 - bounds.left - bounds.width / 2, y: (points[0]!.y + points[1]!.y) / 2 - bounds.top - bounds.height / 2 }
+    setImageScale(pinchStart.scale * pointerDistance(points) / Math.max(1, pinchStart.distance), midpoint.x, midpoint.y)
+    return
+  }
+  if (dragStart?.id === event.pointerId) {
+    imagePan.value = { x: dragStart.panX + event.clientX - dragStart.x, y: dragStart.panY + event.clientY - dragStart.y }
+  }
+}
+
+const handleImagePointerEnd = (event: PointerEvent) => {
+  pointers.delete(event.pointerId)
+  if (pointers.size < 2) pinchStart = undefined
+  if (pointers.size === 1) {
+    const [id, point] = [...pointers.entries()][0]!
+    dragStart = { id, x: point.x, y: point.y, panX: imagePan.value.x, panY: imagePan.value.y }
+  } else if (!pointers.size) {
+    dragStart = undefined
+    imageDragging.value = false
+  }
+}
+
+const handleImageWheel = (event: WheelEvent) => {
+  if ((event.target as HTMLElement).closest('.image-viewer-toolbar, .n-dropdown-menu')) return
+  const point = getImagePoint(event)
+  setImageScale(imageScale.value * Math.exp(-event.deltaY * 0.0015), point.x, point.y)
+}
+
+const handleImageAction = (key: string) => {
+  switch (key) {
+    case 'rotate-left': rotateImage(-90); break
+    case 'rotate-right': rotateImage(90); break
+    case 'zoom-in': zoomImage(0.1); break
+    case 'zoom-out': zoomImage(-0.1); break
+    case 'reset': resetImage(); break
+    case 'download': void downloadImage(); break
+    case 'close': closeImageModal(); break
+  }
+}
 
 // 处理图片旋转
 const rotateImage = (degrees: number) => {
-  imageRotation.value = (imageRotation.value + degrees) % 360;
-};
-
-// 处理图片缩放
-const zoomImage = (factor: number) => {
-  const newScale = imageScale.value + factor;
-  // 限制缩放范围，防止过小或过大
-  if (newScale >= 0.1 && newScale <= 5) {
-    imageScale.value = newScale;
-  }
-};
-
-// 处理鼠标滚轮缩放
-const handleImageWheel = (e: WheelEvent) => {
-  if (e.deltaY < 0) {
-    zoomImage(0.1); // 放大
-  } else {
-    zoomImage(-0.1); // 缩小
-  }
+  imageRotation.value = (imageRotation.value + degrees) % 360
 };
 
 // 下载当前查看的图片
@@ -929,21 +962,27 @@ const downloadImage = async () => {
 // 打开图片模态框
 const openImageModal = (src: string) => {
   modalImage.value = src;
+  resetImage()
   showImageModal.value = true;
 
-  // 添加键盘事件监听
   nextTick(() => {
     document.addEventListener('keydown', handleImageKeydown);
   });
 };
 
+watch(showImageModal, show => {
+  if (show) return
+  resetImage()
+  pointers.clear()
+  dragStart = undefined
+  pinchStart = undefined
+  imageDragging.value = false
+  document.removeEventListener('keydown', handleImageKeydown)
+})
+
 // 关闭图片模态框
 const closeImageModal = () => {
   showImageModal.value = false;
-  resetImage();
-
-  // 移除键盘事件监听
-  document.removeEventListener('keydown', handleImageKeydown);
 };
 
 // 处理键盘事件
@@ -1007,17 +1046,6 @@ const renderMermaidDiagrams = async () => {
       figure.setAttribute('role', 'img')
       figure.setAttribute('aria-label', 'Mermaid 流程图')
       figure.innerHTML = safeSvg
-      const sourceDetails = document.createElement('details')
-      sourceDetails.className = 'mermaid-source'
-      const summary = document.createElement('summary')
-      summary.textContent = '查看 Mermaid 源码'
-      const pre = document.createElement('pre')
-      const sourceCode = document.createElement('code')
-      sourceCode.className = 'language-mermaid'
-      sourceCode.textContent = item.source
-      pre.append(sourceCode)
-      sourceDetails.replaceChildren(summary, pre)
-      figure.append(sourceDetails)
       if (item.code) (item.code.closest('figure.docs-code-block') || item.code.closest('pre'))?.replaceWith(figure)
       else item.element?.replaceWith(figure)
     }
@@ -1571,99 +1599,54 @@ onBeforeUnmount(() => {
   font-family: 'Consolas', 'Monaco', 'Menlo', 'Source Code Pro', 'Courier New', monospace !important;
 }
 
-/* 图片查看模态框样式 */
-.modal-image-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background-color: transparent;
-  width: 100%;
-  height: min(72dvh, 720px);
-  padding: 0;
-  margin: 0 auto;
+/* 透明画布 + 单一浮动操作菜单，避免卡片底色遮挡图片。 */
+.image-viewer-canvas {
   position: relative;
+  display: flex;
+  width: 100vw;
+  height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+  touch-action: none;
+  user-select: none;
 }
 
-.image-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  position: relative;
+.image-viewer-toolbar {
+  position: absolute;
+  z-index: 2;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  pointer-events: auto;
+}
+
+.image-tools-trigger {
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--n-text-color, #fff) 24%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--n-color-modal, #151c26) 72%, transparent);
+  color: var(--n-text-color, #fff);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
 }
 
 .modal-image {
   display: block;
+  max-width: min(90vw, 1400px);
+  max-height: 90dvh;
   object-fit: contain;
-  max-width: calc(100% - 40px);
-  max-height: 80vh;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .32);
   transform-origin: center;
   user-select: none;
-  margin: 0 auto;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
-.image-toolbar {
-  display: flex;
-  gap: 12px;
-  align-items: center;
+@media (max-width: 768px) {
+  .modal-image { max-width: 94vw; max-height: 88dvh; }
 }
-
-.image-toolbar-btn {
-  background: transparent;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--n-text-color);
-  transition: background-color 160ms ease, color 160ms ease;
-  padding: 0;
-
-  &:hover {
-    background-color: var(--n-action-color);
-    color: var(--n-text-color);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  &.close-btn {
-    margin-left: auto;
-    color: var(--n-text-color);
-
-    &:hover {
-      background-color: var(--n-action-color);
-    }
-  }
-}
-
-/* 为 Markdown 内容中的图片添加悬停样式 */
-.markdown-container img {
-  transition: transform 0.2s, filter 0.2s;
-  max-width: 100%;
-
-  &:hover {
-    filter: brightness(1.05);
-    transform: scale(1.01);
-  }
-
-  &[data-action="zoom"] {
-    cursor: zoom-in;
-  }
-}
-
-/* 图片弹窗沿用 NModal card preset 的遮罩和过渡。 */
-.image-modal .n-card-header { padding: 12px 16px; }
-.image-modal .image-toolbar { gap: 4px; flex-wrap: wrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .modal-image { transition: none !important; }

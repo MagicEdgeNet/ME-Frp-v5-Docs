@@ -65,7 +65,7 @@ const onMove = (event: TouchEvent) => {
   const bounds = container.getBoundingClientRect()
   left.value = bounds.left
   width.value = bounds.width
-  distance.value = Math.min(96, Math.max(0, dy) * 0.5)
+  distance.value = Math.min(96, Math.max(0, dy) * 0.35)
 }
 const onEnd = () => {
   if (pulling && distance.value >= threshold && !refreshing.value) {
@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .pull-to-refresh {
   position: fixed;
-  z-index: 45;
+  z-index: 1203;
   display: flex;
   justify-content: center;
   pointer-events: none;

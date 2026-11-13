@@ -21,12 +21,16 @@
         <div class="mobile-right" @click.stop>
           <NButton text class="header-action" aria-label="搜索文档" @click="openSearch"><NIcon :size="20" :component="SearchOutline" /></NButton>
           <NButton text class="header-action" :aria-label="isDarkMode ? '切换浅色主题' : '切换深色主题'" @click="toggleTheme"><NIcon :size="20" :component="isDarkMode ? SunnyOutline : MoonOutline" /></NButton>
-          <NButton text class="menu-button header-action" aria-label="打开文档导航菜单" :aria-expanded="showMenu" @click="showMenu = !showMenu"><NIcon :size="22" :component="MenuOutline" /></NButton>
-          <Transition name="menu-drop"><div v-if="showMenu" class="mobile-dropdown"><nav class="mobile-menu" aria-label="移动文档导航">
-            <RouterLink v-for="item in menuItems" :key="item.path" class="mm-item" :to="item.path" @click="showMenu = false"><NIcon :size="16" :component="item.icon" /><span>{{ item.label }}</span></RouterLink>
-            <a class="mm-item" href="https://www.mefrp.com/dashboard" @click="showMenu = false"><NIcon :size="16" :component="SpeedometerOutline" /><span>管理面板</span></a>
-            <a class="mm-item" href="https://github.com/MagicEdgeNet/ME-Frp-v5-Docs" @click="showMenu = false"><NIcon :size="16" :component="LogoGithub" /><span>GitHub</span></a>
-          </nav></div></Transition>
+          <NPopover v-model:show="showMenu" trigger="click" placement="bottom-end" :show-arrow="false">
+            <template #trigger>
+              <NButton text class="header-action menu-button" aria-label="打开文档导航菜单" :aria-expanded="showMenu">
+                <NIcon :size="22" :component="MenuOutline" />
+              </NButton>
+            </template>
+            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(300px, calc(100vw - 32px)); max-height: min(70dvh, 600px)" :native-scrollbar="false">
+              <NMenu :options="menuOptions" :value="currentMenuKey" @update:value="handleMenuSelect" />
+            </NScrollbar>
+          </NPopover>
         </div>
       </div>
     </NLayoutHeader>
@@ -36,7 +40,9 @@
           <div class="search-input-row">
             <NIcon :component="SearchOutline" />
             <label class="visually-hidden" for="docs-search-input">搜索概念、协议或使用场景</label>
-            <input id="docs-search-input" ref="searchInput" v-model="query" type="search" autocomplete="off" placeholder="搜索概念、协议或使用场景" role="combobox" aria-autocomplete="list" aria-controls="docs-search-results" :aria-expanded="Boolean(query.trim())" :aria-activedescendant="results[activeResult] ? `search-result-${activeResult}` : undefined" @keydown="onSearchKeydown" />
+            <NInput ref="searchInput" v-model:value="query" class="search-query" type="text" autocomplete="off" :bordered="false" placeholder="搜索概念、协议或使用场景"
+              :input-props="{ id: 'docs-search-input', role: 'combobox', 'aria-autocomplete': 'list', 'aria-controls': 'docs-search-results', 'aria-expanded': Boolean(query.trim()), 'aria-activedescendant': results[activeResult] ? `search-result-${activeResult}` : undefined }"
+              @keydown="onSearchKeydown" />
             <kbd>ESC</kbd>
             <NButton quaternary circle class="search-close" aria-label="关闭搜索" @click="searchOpen = false"><NIcon :component="CloseOutline" /></NButton>
           </div>
@@ -45,7 +51,7 @@
         <div id="docs-search-results" class="search-result-list" role="listbox" aria-label="搜索结果" aria-live="polite">
           <p v-if="searchLoading" role="status">正在加载文档索引…</p>
           <p v-else-if="searchError" class="search-error" role="status">{{ searchError }} <NButton text @click="loadSearchIndex">重新加载</NButton></p>
-          <RouterLink v-for="(result, index) in results" v-else :id="`search-result-${index}`" :key="result.path" :to="docPath(result.path)" role="option" :aria-selected="activeResult === index" @mouseenter="activeResult = index" @focus="activeResult = index" @click="searchOpen = false">
+          <RouterLink v-for="(result, index) in results" v-else :id="`search-result-${index}`" :key="result.key" :to="docPath(result.path)" role="option" :aria-selected="activeResult === index" @mouseenter="activeResult = index" @focus="activeResult = index" @click="searchOpen = false">
             <span class="result-title">{{ result.navTitle || result.title }}</span>
             <small>{{ result.snippet || result.description }}</small>
             <span class="result-path">{{ docPath(result.path) }}</span>
@@ -60,9 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, h, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { NButton, NConfigProvider, NIcon, NLayoutHeader, NModal } from 'naive-ui'
+import { NButton, NConfigProvider, NIcon, NInput, NLayoutHeader, NMenu, NModal, NPopover, NScrollbar } from 'naive-ui'
+import type { MenuOption } from 'naive-ui'
 import { BookOutline, CloseOutline, CodeSlashOutline, LogoGithub, MenuOutline, MoonOutline, RocketOutline, SearchOutline, SpeedometerOutline, SunnyOutline } from '@vicons/ionicons5'
 import AppLogo from './AppLogo.vue'
 import { docPath } from '../shared/docs'
@@ -77,18 +84,30 @@ const router = useRouter()
 const showMenu = ref(false)
 const searchOpen = ref(false)
 const query = ref('')
-const searchInput = ref<HTMLInputElement>()
+const searchInput = ref<InstanceType<typeof NInput> | null>(null)
 const searchIndex = ref<SearchDocument[] | null>(null)
 const searchLoading = ref(false)
 const searchError = ref('')
 const activeResult = ref(0)
-const results = computed(() => searchDocuments(query.value, searchIndex.value || []).slice(0, 8))
+const results = computed(() => searchDocuments(query.value, searchIndex.value || []).slice(0, 12))
 const menuItems = [
   { label: '首页', path: '/', icon: BookOutline },
   { label: '快速开始', path: docPath('guide/quick-start'), icon: RocketOutline },
   { label: '基础概念', path: docPath('concepts/overview'), icon: CodeSlashOutline },
   { label: '使用教程', path: docPath('usage/common'), icon: BookOutline },
 ]
+const menuOptions: MenuOption[] = [
+  ...menuItems.map(item => ({ label: item.label, key: item.path, icon: () => h(NIcon, null, { default: () => h(item.icon) }) })),
+  { type: 'divider', key: 'docs-nav-divider' },
+  { label: '管理面板', key: 'https://www.mefrp.com/dashboard', icon: () => h(NIcon, null, { default: () => h(SpeedometerOutline) }) },
+  { label: 'GitHub', key: 'https://github.com/MagicEdgeNet/ME-Frp-v5-Docs', icon: () => h(NIcon, null, { default: () => h(LogoGithub) }) },
+]
+const currentMenuKey = computed(() => menuItems.find(item => item.path === router.currentRoute.value.path)?.path || '')
+function handleMenuSelect(key: string) {
+  showMenu.value = false
+  if (key.startsWith('https://')) window.location.assign(key)
+  else void router.push(key)
+}
 let lastSearchTrigger: HTMLElement | undefined
 async function focusSearchInput() {
   await nextTick()
@@ -138,7 +157,6 @@ function onKeydown(event: KeyboardEvent) {
   }
   if (event.key === 'Escape') showMenu.value = false
 }
-function onDocumentClick(event: MouseEvent) { if (!(event.target as HTMLElement).closest('.mobile-right')) showMenu.value = false }
 watch(query, () => { activeResult.value = 0 })
 watch(activeResult, async index => {
   await nextTick()
@@ -155,8 +173,8 @@ watch(searchOpen, async open => {
   showMenu.value = false
   void loadSearchIndex()
 })
-onMounted(() => { document.addEventListener('keydown', onKeydown); document.addEventListener('click', onDocumentClick) })
-onUnmounted(() => { document.removeEventListener('keydown', onKeydown); document.removeEventListener('click', onDocumentClick) })
+onMounted(() => { document.addEventListener('keydown', onKeydown) })
+onUnmounted(() => { document.removeEventListener('keydown', onKeydown) })
 </script>
 
 <style lang="scss" scoped>

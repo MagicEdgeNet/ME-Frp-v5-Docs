@@ -5,17 +5,21 @@
   margin: 20px 0;
   padding: 16px;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
   border: 1px solid var(--docs-line, #dce2e9);
   border-radius: 6px;
   background: var(--docs-bg, #fff);
   color: var(--docs-ink, #162235);
   text-align: center;
-  touch-action: pan-x pan-y;
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
 
-  svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
-  .mermaid-source { margin-top: 12px; border-top: 1px solid var(--docs-line, #dce2e9); text-align: left; }
-  .mermaid-source summary { padding-top: 9px; color: var(--docs-muted, #667085); font-size: 12px; cursor: pointer; }
-  .mermaid-source pre { max-height: 300px; overflow: auto; }
+  svg { display: block; width: 100%; min-width: 0; max-width: 1240px; height: auto; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  .mermaid-diagram { margin: 16px -4px; padding: 12px 8px; }
+  .mermaid-diagram svg { width: max(100%, 680px); max-width: none; margin-left: 0; }
 }
 
 .markdown-container.dark-theme .mermaid-diagram { --docs-bg: #151c26; --docs-ink: #f3f6fa; --docs-line: #2a3645; --docs-muted: #a7b2c1; }

@@ -7,6 +7,7 @@ export interface SearchDocument {
 }
 
 export interface SearchResult extends SearchDocument {
+  key: string
   snippet: string
   score: number
 }
@@ -32,34 +33,53 @@ export function loadSearchIndex(): Promise<SearchDocument[]> {
   return searchIndexRequest
 }
 
-function excerpt(document: SearchDocument, terms: string[], maxLength = 150): string {
-  const body = document.text.trim()
-  if (!body) return document.description
-  const lower = body.toLocaleLowerCase('zh-CN')
-  const matches = terms.map(term => lower.indexOf(term)).filter(index => index >= 0)
-  if (!matches.length) return document.description
-  const matchAt = Math.min(...matches)
-  const start = Math.max(0, matchAt - Math.floor(maxLength / 3))
-  const end = Math.min(body.length, start + maxLength)
-  return `${start ? '…' : ''}${body.slice(start, end).trim()}${end < body.length ? '…' : ''}`
+function excerpts(document: SearchDocument, terms: string[], maxLength = 150): string[] {
+  const paragraphs = document.text.split(/\n+/).map(part => part.trim()).filter(Boolean)
+  const snippets: string[] = []
+  const seen = new Set<string>()
+
+  for (const paragraph of paragraphs) {
+    const lower = paragraph.toLocaleLowerCase('zh-CN')
+    for (const term of terms) {
+      let matchAt = lower.indexOf(term)
+      while (matchAt >= 0) {
+        const start = Math.max(0, Math.min(paragraph.length - maxLength, matchAt - Math.floor(maxLength / 3)))
+        const end = Math.min(paragraph.length, start + maxLength)
+        const snippet = `${start ? '…' : ''}${paragraph.slice(start, end).trim()}${end < paragraph.length ? '…' : ''}`
+        if (!seen.has(snippet)) {
+          seen.add(snippet)
+          snippets.push(snippet)
+        }
+        matchAt = lower.indexOf(term, matchAt + Math.max(1, term.length))
+      }
+    }
+  }
+
+  return snippets.length ? snippets : [document.description]
 }
 
 export function searchDocuments(query: string, documents: SearchDocument[]): SearchResult[] {
   const terms = query.toLocaleLowerCase('zh-CN').trim().split(/\s+/).filter(Boolean)
   if (!terms.length) return []
 
-  return documents.map((document, position) => {
+  return documents.flatMap((document, position) => {
     const title = `${document.title} ${document.navTitle || ''}`.toLocaleLowerCase('zh-CN')
     const description = document.description.toLocaleLowerCase('zh-CN')
     const body = document.text.toLocaleLowerCase('zh-CN')
     const allText = `${title} ${description} ${body}`
-    if (!terms.every(term => allText.includes(term))) return undefined
+    if (!terms.every(term => allText.includes(term))) return []
 
     const score = terms.reduce((total, term) => total + (
       title.includes(term) ? 12 : description.includes(term) ? 5 : 1
     ), 0)
-    return { ...document, snippet: excerpt(document, terms), score, position }
-  }).filter((result): result is SearchResult & { position: number } => result !== undefined)
-    .sort((a, b) => b.score - a.score || a.position - b.position)
-    .map(({ position: _position, ...result }) => result)
+    return excerpts(document, terms).map((snippet, matchIndex) => ({
+      ...document,
+      key: `${document.path}:${matchIndex}`,
+      snippet,
+      score,
+      position,
+      matchIndex,
+    }))
+  }).sort((a, b) => b.score - a.score || a.position - b.position || a.matchIndex - b.matchIndex)
+    .map(({ position: _position, matchIndex: _matchIndex, ...result }) => result)
 }

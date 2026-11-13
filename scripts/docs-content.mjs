@@ -76,6 +76,8 @@ export function renderDocument(markdown, toc = { minDepth: 2, maxDepth: 3 }) {
 export function searchTextFromHtml(html) {
   const withoutMermaidSource = html.replace(/<figure class="docs-code-block">[\s\S]*?<code class="language-mermaid"[\s\S]*?<\/code>[\s\S]*?<\/figure>/gi, ' ')
   return withoutMermaidSource
+    .replace(/<\/(?:p|li|h[1-6]|tr|pre|blockquote|section|article|figcaption|summary|div)\s*>/gi, '\n')
+    .replace(/<br\s*\/?\s*>/gi, '\n')
     .replace(/<[^>]*>/g, ' ')
     .replace(/&#(?:x([\da-f]+)|(\d+));/gi, (_match, hex, decimal) => String.fromCodePoint(Number.parseInt(hex || decimal, hex ? 16 : 10)))
     .replace(/&nbsp;/gi, ' ')
@@ -84,7 +86,9 @@ export function searchTextFromHtml(html) {
     .replace(/&#39;/gi, "'")
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
-    .replace(/\s+/g, ' ')
+    .replace(/[\t\r\f\v ]+/g, ' ')
+    .replace(/ *\n */g, '\n')
+    .replace(/\n{2,}/g, '\n')
     .trim()
 }
 
