@@ -1,41 +1,35 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { loadDocumentation, escapeHtml as esc, assetContentType } from './docs-content.mjs'
+import { loadDocumentation, buildSearchIndex, escapeHtml as esc, assetContentType } from './docs-content.mjs'
 
-const origin = 'https://docs.mefrp.com'
+import { pageSeo, siteOrigin as origin } from '../src/shared/seo.ts'
 const href = page => `/docs/${page.path}`
 const json = value => JSON.stringify(value).replace(/</g, '\\u003c')
 
 export function structuredData(page, siteTitle) {
-  return {
-    '@context': 'https://schema.org', '@graph': [
-      { '@type': 'TechArticle', headline: page.title, description: page.description, inLanguage: 'zh-CN', url: origin + href(page), isPartOf: { '@type': 'WebSite', name: siteTitle, url: origin + '/docs/' } },
-      { '@type': 'BreadcrumbList', itemListElement: [
-        { '@type': 'ListItem', position: 1, name: siteTitle, item: origin + '/docs/' },
-        { '@type': 'ListItem', position: 2, name: page.title, item: origin + href(page) }
-      ] }
-    ]
-  }
+  return pageSeo(page, { title: siteTitle }).structuredData
+}
+
+export function withMetadata(template, seo) {
+  const cleaned = template.replace(/<title>[\s\S]*?<\/title>/gi, '')
+    .replace(/<meta\b(?=[^>]*(?:name=["'](?:description|keywords|robots|twitter:[^"']+)["']|property=["']og:[^"']+["']))[^>]*>/gi, '')
+    .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '')
+    .replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, '')
+  const meta = (entries, attr) => Object.entries(entries).map(([key, value]) => `<meta ${attr}="${key}" content="${esc(value)}">`).join('\n')
+  return cleaned.replace('</head>', `<title>${esc(seo.title)}</title>
+<meta name="description" content="${esc(seo.description)}">
+<meta name="robots" content="${seo.robots}">
+<link rel="canonical" id="canonical-tag" href="${esc(seo.url)}">
+${meta(seo.openGraph, 'property')}
+${meta(seo.twitter, 'name')}
+${seo.structuredData ? `<script id="docs-structured-data" type="application/ld+json">${json(seo.structuredData)}</script>` : ''}
+</head>`)
 }
 
 export function staticDocument(template, page, docs) {
   const { manifest, pages } = docs
-  const url = origin + href(page)
-  const title = `${page.title} | ${manifest.title}`
-  let html = template.replace(/<title>[\s\S]*?<\/title>/i, '')
-    .replace(/<meta\b(?=[^>]*(?:name=["'](?:description|keywords|robots|twitter:[^"']+)["']|property=["']og:[^"']+["']))[^>]*>/gi, '')
-    .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '')
-    .replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, '')
-  const metadata = `<title>${esc(title)}</title>
-<meta name="description" content="${esc(page.description)}">
-<meta name="robots" content="${page.index === false ? 'noindex,follow' : 'index,follow'}">
-<link rel="canonical" id="canonical-tag" href="${esc(url)}">
-<meta property="og:type" content="article"><meta property="og:site_name" content="${esc(manifest.title)}">
-<meta property="og:locale" content="zh_CN"><meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(page.description)}"><meta property="og:url" content="${esc(url)}">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(page.description)}"><meta name="twitter:url" content="${esc(url)}">
-<script id="docs-structured-data" type="application/ld+json">${json(structuredData(page, manifest.title))}</script>
-<script>document.documentElement.classList.add('docs-enhanced')</script>
+  let html = withMetadata(template, pageSeo(page, manifest))
+  const metadata = `<script>document.documentElement.classList.add('docs-enhanced')</script>
 <style>.docs-enhanced #docs-static{visibility:hidden}#docs-static{max-width:1200px;margin:32px auto;padding:24px;display:grid;grid-template-columns:240px minmax(0,1fr) 200px;gap:32px;font:16px/1.7 system-ui;color:#202a38;background:#fff}#docs-static img{max-width:100%;height:auto}#docs-static pre{overflow:auto;background:#f3f5f7;padding:16px}#docs-static a{color:#2563eb}#docs-static nav ul{padding-left:20px}#docs-static .docs-callout{padding:16px;border-left:4px solid #2563eb;background:#f3f5f7}#docs-static table{border-collapse:collapse}#docs-static td,#docs-static th{border:1px solid #ddd;padding:8px}#docs-static h1,#docs-static h2,#docs-static h3{scroll-margin-top:24px}#docs-static .docs-static-outline{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;border-left:1px solid #ddd;padding-left:16px;font-size:14px}@media(max-width:1199px){#docs-static{grid-template-columns:240px minmax(0,1fr)}#docs-static .docs-static-outline{display:none}}@media(max-width:768px){#docs-static{display:block;margin:0;padding:16px}#docs-static>nav{margin-bottom:24px}}</style>`
   html = html.replace('</head>', metadata + '\n</head>')
   const pageLink = p => `<li><a href="${href(p)}"${p.path === page.path ? ' aria-current="page"' : ''}>${esc(p.navTitle || p.title)}</a></li>`
@@ -53,7 +47,11 @@ export function docsPlugin() {
   let root
   let contentRoot
   let docs
-  const refresh = () => { docs = loadDocumentation(contentRoot); return docs }
+  const refresh = () => {
+    const loaded = loadDocumentation(contentRoot)
+    docs = { ...loaded, searchIndex: buildSearchIndex(loaded.publicPages.map(page => loaded.compiled.get(page.path))) }
+    return docs
+  }
   return {
     name: 'community-documentation', enforce: 'post',
     configResolved(config) {
@@ -69,6 +67,10 @@ export function docsPlugin() {
       })
       server.middlewares.use((req, res, next) => {
         const pathname = new URL(req.url, 'http://localhost').pathname
+        if (pathname === '/_docs-search.json') {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8')
+          return res.end(json(docs.searchIndex))
+        }
         if (pathname.startsWith('/_docs-data/') && pathname.endsWith('.json')) {
           const page = docs.compiled.get(pathname.slice(12, -5))
           if (!page) { res.statusCode = 404; return res.end('Document not found') }
@@ -101,7 +103,7 @@ export function docsPlugin() {
         if (key && !docs.compiled.has(key) && !Object.hasOwn(docs.manifest.redirects || {}, key)) {
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/html; charset=utf-8')
-          return res.end('<!doctype html><html lang="zh-CN"><head><meta name="robots" content="noindex"><title>文档未找到</title></head><body><h1>文档未找到</h1><a href="/docs/">返回文档</a></body></html>')
+          return res.end(withMetadata(`<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"></head><body><h1>文档未找到</h1><a href="/docs/">返回文档</a></body></html>`, pageSeo(undefined, docs.manifest, `/docs/${key}`)))
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8')
         return res.end(readFileSync(resolve(root, server.config.build.outDir, `docs/${key ? key + '/' : ''}index.html`)))
@@ -113,10 +115,8 @@ export function docsPlugin() {
       const home = docs.compiled.get('home')
       if (!home) throw new Error('无法生成站点首页：manifest 缺少 home 页面')
       const homeTemplate = String(index.source)
-      const homeMarkup = `<main id="portal-static"><h1>${esc(home.title)}</h1>${home.html}</main>`
-      const homeDocument = homeTemplate
-        .replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(home.title)} | ${esc(docs.manifest.title)}</title>`)
-        .replace('</head>', `<meta name="description" content="${esc(home.description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="${origin}/"><meta property="og:title" content="${esc(home.title)}"><meta property="og:description" content="${esc(home.description)}"><meta property="og:url" content="${origin}/"></head>`)
+      const homeMarkup = `<main id="portal-static">${home.html}</main>`
+      const homeDocument = withMetadata(homeTemplate, pageSeo(undefined, docs.manifest, '/'))
         .replace('<div id="app"></div>', `<div id="app">${homeMarkup}</div>`)
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source })
       for (const page of docs.compiled.values()) {
@@ -132,6 +132,7 @@ export function docsPlugin() {
       for (const asset of docs.assets) emit(`docs-assets/${asset}`, readFileSync(resolve(contentRoot, 'assets', asset)))
       index.source = homeDocument
       const sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + docs.pages.filter(page => page.index !== false && page.path !== 'home').map(page => `<url><loc>${origin}${href(page)}</loc></url>`).join('') + `<url><loc>${origin}/</loc></url></urlset>`
+      emit('_docs-search.json', json(docs.searchIndex))
       emit('sitemap.xml', sitemap)
     }
   }

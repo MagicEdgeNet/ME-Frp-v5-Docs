@@ -40,12 +40,7 @@ router.beforeEach((to, from) => {
   const navigationType = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type
   loads.set(to, beginPageNavigation(shouldPlayPageLoadingAnimation(to.path, from.path, from.matched.length === 0, navigationType)))
   const page = findDocPage(to.path)
-  document.title = page ? `${page.title} | ${docsManifest.title}` : docsManifest.title
-  updateDocSeo(page)
-  if (!page) {
-    document.title = '文档未找到 | ' + docsManifest.title
-    document.querySelector<HTMLMetaElement>('meta[name="robots"]')?.setAttribute('content', 'noindex,follow')
-  }
+  updateDocSeo(page, to.path)
 })
 
 router.afterEach((to, _from, failure) => {

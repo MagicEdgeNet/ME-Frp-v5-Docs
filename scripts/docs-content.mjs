@@ -73,6 +73,31 @@ export function renderDocument(markdown, toc = { minDepth: 2, maxDepth: 3 }) {
   return { html, headings: headings.filter(h => h.depth >= toc.minDepth && h.depth <= toc.maxDepth), allHeadings: headings, links }
 }
 
+export function searchTextFromHtml(html) {
+  const withoutMermaidSource = html.replace(/<figure class="docs-code-block">[\s\S]*?<code class="language-mermaid"[\s\S]*?<\/code>[\s\S]*?<\/figure>/gi, ' ')
+  return withoutMermaidSource
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&#(?:x([\da-f]+)|(\d+));/gi, (_match, hex, decimal) => String.fromCodePoint(Number.parseInt(hex || decimal, hex ? 16 : 10)))
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export function buildSearchIndex(pages) {
+  return pages.filter(page => page.index !== false).map(page => ({
+    path: page.path,
+    title: page.title,
+    ...(page.navTitle ? { navTitle: page.navTitle } : {}),
+    description: page.description,
+    text: searchTextFromHtml(page.html)
+  }))
+}
+
 export function loadDocumentation(root) {
   const manifestPath = resolve(root, 'manifest.json')
   if (!existsSync(manifestPath)) throw new Error('缺少 manifest.json，请从文档仓库根目录运行构建')
@@ -81,12 +106,15 @@ export function loadDocumentation(root) {
   const toc = manifest.toc
   if (!Number.isInteger(toc?.minDepth) || !Number.isInteger(toc?.maxDepth) || toc.minDepth < 2 || toc.maxDepth > 6 || toc.minDepth > toc.maxDepth) throw new Error('无效的 TOC 标题层级')
   const pages = []
+  const publicPages = []
   const seen = new Set()
   const groupIds = new Set()
   for (const group of manifest.groups) {
     if (!safePath(group.id) || groupIds.has(group.id) || !group.title?.trim() || !Array.isArray(group.pages) || !group.pages.length) throw new Error('无效或重复的文档分组')
     groupIds.add(group.id)
-    pages.push(...group.pages.map(page => ({ ...page, group: group.title })))
+    const groupedPages = group.pages.map(page => ({ ...page, group: group.title }))
+    pages.push(...groupedPages)
+    publicPages.push(...groupedPages.filter(page => page.index !== false))
   }
   pages.push(...(manifest.unlisted || []).map(page => ({ ...page, group: '维护者参考' })))
   const compiled = new Map()
@@ -122,7 +150,7 @@ export function loadDocumentation(root) {
       }
     }
   }
-  return { manifest, pages, compiled, assets }
+  return { manifest, pages, publicPages, compiled, assets }
 }
 
 export function listFiles(root) {
