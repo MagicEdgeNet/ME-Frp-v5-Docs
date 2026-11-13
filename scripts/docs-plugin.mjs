@@ -30,7 +30,16 @@ export function staticDocument(template, page, docs) {
   const { manifest, pages } = docs
   let html = withMetadata(template, pageSeo(page, manifest))
   const metadata = `<script>document.documentElement.classList.add('docs-enhanced')</script>
-<style>.docs-enhanced #docs-static{visibility:hidden}#docs-static{max-width:1200px;margin:32px auto;padding:24px;display:grid;grid-template-columns:240px minmax(0,1fr) 200px;gap:32px;font:16px/1.7 system-ui;color:#202a38;background:#fff}#docs-static img{max-width:100%;height:auto}#docs-static pre{overflow:auto;background:#f3f5f7;padding:16px}#docs-static a{color:#2563eb}#docs-static nav ul{padding-left:20px}#docs-static .docs-callout{padding:16px;border-left:4px solid #2563eb;background:#f3f5f7}#docs-static table{border-collapse:collapse}#docs-static td,#docs-static th{border:1px solid #ddd;padding:8px}#docs-static h1,#docs-static h2,#docs-static h3{scroll-margin-top:24px}#docs-static .docs-static-outline{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;border-left:1px solid #ddd;padding-left:16px;font-size:14px}@media(max-width:1199px){#docs-static{grid-template-columns:240px minmax(0,1fr)}#docs-static .docs-static-outline{display:none}}@media(max-width:768px){#docs-static{display:block;margin:0;padding:16px}#docs-static>nav{margin-bottom:24px}}</style>`
+<style>
+:root{color-scheme:light dark;--static-bg:#fff;--static-ink:#111827;--static-muted:#475569;--static-line:#c7d0dc;--static-soft:#f3f5f7;--static-link:#1d4ed8}
+@media(prefers-color-scheme:dark){:root{--static-bg:#111a25;--static-ink:#f5f7fb;--static-muted:#c3ccd7;--static-line:#334155;--static-soft:#1b2836;--static-link:#9bc3ff}body{background:var(--static-bg);color:var(--static-ink)}}
+.docs-enhanced #docs-static{visibility:hidden}
+#docs-static{max-width:1200px;margin:32px auto;padding:24px;display:grid;grid-template-columns:240px minmax(0,1fr) 200px;gap:32px;font:16px/1.7 system-ui;color:var(--static-ink);background:var(--static-bg)}
+#portal-static{max-width:920px;margin:0 auto;padding:32px 24px 48px;font:16px/1.7 system-ui;color:var(--static-ink);background:var(--static-bg)}
+#portal-static a{color:var(--static-link)}
+#docs-static img{max-width:100%;height:auto}#docs-static pre{overflow:auto;background:var(--static-soft);padding:16px}#docs-static a{color:var(--static-link)}#docs-static nav ul{padding-left:20px}#docs-static .docs-callout{padding:16px;border-left:4px solid var(--static-link);background:var(--static-soft)}#docs-static table{border-collapse:collapse}#docs-static td,#docs-static th{border:1px solid var(--static-line);padding:8px}#docs-static h1,#docs-static h2,#docs-static h3{scroll-margin-top:24px}#docs-static .docs-static-outline{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;border-left:1px solid var(--static-line);padding-left:16px;font-size:14px;color:var(--static-muted)}
+@media(max-width:1199px){#docs-static{grid-template-columns:240px minmax(0,1fr)}#docs-static .docs-static-outline{display:none}}@media(max-width:768px){#docs-static{display:block;margin:0;padding:16px}#docs-static>nav{margin-bottom:24px}}
+</style>`
   html = html.replace('</head>', metadata + '\n</head>')
   const pageLink = p => `<li><a href="${href(p)}"${p.path === page.path ? ' aria-current="page"' : ''}>${esc(p.navTitle || p.title)}</a></li>`
   const navigation = manifest.groups.map(group => group.standalone ? pageLink(group.pages[0]) : `<li>${esc(group.title)}<ul>${group.pages.map(pageLink).join('')}</ul></li>`).join('')
@@ -117,6 +126,7 @@ export function docsPlugin() {
       const homeTemplate = String(index.source)
       const homeMarkup = `<main id="portal-static">${home.html}</main>`
       const homeDocument = withMetadata(homeTemplate, pageSeo(undefined, docs.manifest, '/'))
+        .replace('</head>', `<style>:root{color-scheme:light dark;--static-bg:#fff;--static-ink:#111827;--static-link:#1d4ed8}@media(prefers-color-scheme:dark){:root{--static-bg:#111a25;--static-ink:#f5f7fb;--static-link:#9bc3ff}body{background:var(--static-bg);color:var(--static-ink)}}#portal-static{max-width:920px;margin:0 auto;padding:32px 24px 48px;font:16px/1.7 system-ui;color:var(--static-ink);background:var(--static-bg)}#portal-static a{color:var(--static-link)}</style></head>`)
         .replace('<div id="app"></div>', `<div id="app">${homeMarkup}</div>`)
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source })
       for (const page of docs.compiled.values()) {

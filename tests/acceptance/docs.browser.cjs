@@ -29,16 +29,26 @@ let browser
   const page = await context.newPage()
   const errors = []
   const mermaidLayoutRequests = []
+  const selectTheme = async mode => {
+    await page.getByRole('button', { name: '网站设置' }).click()
+    const label = mode === 'system' ? '跟随系统' : mode === 'light' ? '浅色主题' : '深色主题'
+    await page.locator('.n-dropdown-menu:visible .n-dropdown-option').filter({ hasText: label }).click()
+    await page.locator('.n-dropdown-menu').waitFor({ state: 'hidden' })
+  }
   page.on('request', request => {
     const url = new URL(request.url())
     if (/elk/i.test(url.pathname)) mermaidLayoutRequests.push(request.url())
     if (url.pathname === '/_docs-search.json') searchIndexRequests.push(request.url())
   })
   page.on('pageerror', error => errors.push(error.message))
-  await page.goto(`${origin}/docs/usage/common`, { waitUntil: 'domcontentloaded' })
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto(`${origin}/docs/usage/client`, { waitUntil: 'domcontentloaded' })
   assert.equal(await page.locator('#docs-static:visible').count(), 0, 'Static fallback does not flash a second layout before the app loads')
   assert.equal(await page.evaluate(() => performance.getEntriesByType('navigation')[0].type), 'navigate')
   await page.locator('.docs-page .markdown-container h1').waitFor()
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark', 'First visit follows the system color scheme')
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.waitForFunction(() => document.documentElement.dataset.theme === 'light')
   assert.equal(await page.evaluate(() => window.__brandSeen), true, 'Initial navigation plays the brand animation')
   await page.locator('.page-loading-screen').waitFor({ state: 'hidden' })
   assert.equal((await page.locator('.docs-page h1').textContent()).replace(/^#\s*/, ''), '通用客户端教程')
@@ -47,7 +57,7 @@ let browser
   assert.equal(await page.evaluate(() => performance.getEntriesByType('navigation')[0].type), 'reload')
   await page.locator('.docs-page .markdown-container h1').waitFor()
   assert.equal(await page.evaluate(() => window.__brandSeen), false, 'Browser refresh does not play the docs brand animation')
-  assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://docs.mefrp.com/docs/usage/common')
+  assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://docs.mefrp.com/docs/usage/client')
   assert(await page.locator('.docs-toc .n-anchor').count() > 0)
   assert.equal(await page.locator('.docs-breadcrumb.n-breadcrumb').count(), 1)
   assert(await page.locator('.docs-toc a').count() > 0)
@@ -58,6 +68,20 @@ let browser
     'Minecraft 开服联机', 'Windows 远程桌面', 'Web 建站', '星露谷物语 联机', 'Navidrome 音乐流媒体',
     'VNC 远程访问', 'SSH 远程访问', 'SMB 文件共享', '幻兽帕鲁联机'
   ], '侧栏包含原有页面并按 manifest 顺序展示新主题')
+  const settingsButton = page.getByRole('button', { name: '网站设置' })
+  await settingsButton.waitFor({ state: 'visible' })
+  const settingsGeometry = await settingsButton.evaluate(el => {
+    const rect = el.getBoundingClientRect()
+    return { width: rect.width, height: rect.height, right: innerWidth - rect.right, bottom: innerHeight - rect.bottom, position: getComputedStyle(el).position }
+  })
+  assert.deepEqual(settingsGeometry, { width: 40, height: 40, right: 24, bottom: 24, position: 'fixed' }, 'Settings button is fixed in the bottom-right like the panel control')
+  assert.equal(await page.getByRole('button', { name: /切换(?:浅|深)色主题/ }).count(), 0, 'Theme control is not duplicated in the topbar')
+  await page.getByRole('button', { name: '打开完整文档目录' }).click()
+  const allDocsMenu = page.locator('.n-popover:visible').filter({ has: page.locator('.n-menu') }).last()
+  await allDocsMenu.waitFor({ state: 'visible' })
+  assert.equal(await allDocsMenu.locator('.n-menu-item-content-header a[href^="/docs/"]').count(), 29, 'More menu exposes the complete article index')
+  assert(await allDocsMenu.getByText('项目介绍', { exact: true }).isVisible())
+  await page.keyboard.press('Escape')
   const sidebarGeometry = await page.evaluate(() => {
     const container = document.querySelector('.docs-sider-scroll .n-scrollbar-container')
     const rect = container.getBoundingClientRect()
@@ -163,7 +187,7 @@ let browser
   })
   assert(tableBounds.scrollWidth >= tableBounds.clientWidth)
   assert(tableBounds.pageWidth <= 1440, 'Wide tables scroll inside their own container')
-  await page.goto(`${origin}/docs/usage/common`)
+  await page.goto(`${origin}/docs/usage/client`)
   await page.locator('.docs-page .markdown-container h1').waitFor()
   await page.locator('.page-loading-screen').waitFor({ state: 'hidden' })
   const clickHalf = async (name, fraction) => {
@@ -198,12 +222,12 @@ let browser
   await page.setViewportSize({ width: 390, height: 844 })
   assert.equal(await page.locator('.docs-outline').isVisible(), false, '窄屏不把悬浮 TOC 改成正文内联目录')
   assert.equal(await page.locator('.docs-sider').count(), 0)
-  const navTrigger = page.getByRole('button', { name: '打开文档导航菜单' })
+  const navTrigger = page.getByRole('button', { name: '打开完整文档目录' })
   await navTrigger.click()
   const mobileNav = page.locator('.n-popover:visible').filter({ has: page.locator('.n-menu') }).last()
   await mobileNav.waitFor({ state: 'visible' })
-  assert.equal(await mobileNav.locator('.n-menu-item').count(), 6)
-  await mobileNav.getByText('基础概念', { exact: true }).click()
+  assert.equal(await mobileNav.locator('.n-menu a[href^="/docs/"]').count(), 29, 'Mobile more menu exposes every article link')
+  await mobileNav.getByText('内网穿透概念', { exact: true }).click()
   await page.waitForURL('**/docs/concepts/overview')
   await page.locator('.docs-page h1').waitFor()
   await page.locator('.mermaid-diagram svg').first().waitFor()
@@ -213,9 +237,9 @@ let browser
   assert.equal(await mermaidSvg.locator('script, foreignObject').count(), 0, 'Sanitized Mermaid SVG excludes executable HTML')
   assert.equal(await page.locator('.mermaid-source').count(), 0, 'Mermaid source is not exposed in the rendered article')
   const lightMermaidText = await mermaidSvg.locator('text').first().evaluate(el => getComputedStyle(el).fill)
-  await page.getByRole('button', { name: '切换深色主题' }).click()
+  await selectTheme('dark')
   await page.waitForFunction(previous => getComputedStyle(document.querySelector('.mermaid-diagram svg text')).fill !== previous, lightMermaidText)
-  await page.getByRole('button', { name: '切换浅色主题' }).click()
+  await selectTheme('light')
   await page.waitForFunction(previous => getComputedStyle(document.querySelector('.mermaid-diagram svg text')).fill === previous, lightMermaidText)
   assert.deepEqual(mermaidLayoutRequests, [], 'Dagre rendering does not request an ELK asset on first use')
   await page.getByRole('button', { name: '搜索文档' }).click()
@@ -267,8 +291,8 @@ let browser
   assert.equal(await page.locator('.menu-button').isVisible(), true)
   await page.locator('.menu-button').click()
   assert(await page.locator('.n-popover:visible').filter({ has: page.locator('.n-menu') }).count() > 0)
-  await page.getByRole('button', { name: '切换深色主题' }).click()
-  assert(await page.locator('.portal-shell').evaluate(el => el.classList.contains('is-dark')))
+  await selectTheme('dark')
+  await selectTheme('light')
   await page.goto(`${origin}/docs/app/ssh`)
   await page.locator('.docs-page h1').waitFor()
   const tocTrigger = page.locator('.toc-trigger')
@@ -277,19 +301,29 @@ let browser
   await tocTrigger.click()
   const tocDrawer = page.locator('.mobile-toc-drawer-panel')
   await tocDrawer.waitFor({ state: 'visible' })
-  const drawerVisuals = await tocDrawer.evaluate(el => ({
-    height: Math.round(el.getBoundingClientRect().height),
-    blur: getComputedStyle(el.querySelector('.n-drawer-content')).backdropFilter
-  }))
-  assert.equal(drawerVisuals.height, 640, 'Mobile TOC has a fixed, enlarged drawer height')
-  assert(drawerVisuals.blur.includes('blur'), 'The drawer uses a frosted translucent surface')
+  const drawerVisuals = await tocDrawer.evaluate(el => {
+    const panel = el.querySelector('.n-drawer-content')
+    return {
+      height: Math.round(el.getBoundingClientRect().height),
+      blur: getComputedStyle(panel).backdropFilter,
+      background: getComputedStyle(panel).backgroundColor,
+      bodyBackground: getComputedStyle(el.querySelector('.n-drawer-body-content-wrapper')).backgroundColor,
+    }
+  })
+  assert.equal(drawerVisuals.height, 427, 'Mobile TOC drawer is two-thirds of its previous maximum height')
+  assert(drawerVisuals.blur.includes('blur(32px)'), 'The drawer uses strong backdrop blur')
+  assert.match(drawerVisuals.background, /rgba\(255, 255, 255, 0\.48\)/, 'The light glass is sufficiently transparent')
+  assert.equal(drawerVisuals.bodyBackground, 'rgba(0, 0, 0, 0)', 'Opaque Naive drawer body does not cover the glass')
   const drawerWasDark = await tocDrawer.evaluate(el => el.classList.contains('is-dark'))
-  const drawerThemeToggle = page.getByRole('button', { name: /切换(?:浅|深)色主题/ })
-  await drawerThemeToggle.click()
+  await selectTheme(drawerWasDark ? 'light' : 'dark')
   await page.waitForFunction(previous => document.querySelector('.mobile-toc-drawer-panel')?.classList.contains('is-dark') !== previous, drawerWasDark)
-  const drawerBackground = await tocDrawer.evaluate(el => getComputedStyle(el).getPropertyValue('--docs-bg').trim())
-  assert.equal(drawerBackground, drawerWasDark ? '#fff' : '#151c26', 'Drawer surface follows the active theme')
-  await drawerThemeToggle.click()
+  const darkDrawerVisuals = await tocDrawer.evaluate(el => {
+    const panel = el.querySelector('.n-drawer-content')
+    return { background: getComputedStyle(panel).backgroundColor, blur: getComputedStyle(panel).backdropFilter }
+  })
+  assert.match(darkDrawerVisuals.background, /rgba\(15, 22, 32, 0\.52\)/)
+  assert(darkDrawerVisuals.blur.includes('blur(32px)'))
+  await selectTheme(drawerWasDark ? 'dark' : 'light')
   await page.waitForFunction(previous => document.querySelector('.mobile-toc-drawer-panel')?.classList.contains('is-dark') === previous, drawerWasDark)
   assert(await tocDrawer.locator('.mobile-toc-drawer a').count() > 0)
   const layerCheck = await page.evaluate(() => {
@@ -341,12 +375,8 @@ let browser
   await backToTop.click()
   await page.waitForFunction(() => document.querySelector('.docs-scroll > .n-scrollbar-container').scrollTop === 0)
   const codeColor = await page.locator('.docs-code-widget .n-code').first().evaluate(el => el.style.getPropertyValue('--n-text-color'))
-  await page.locator('.menu-button').click()
-  await page.getByRole('button', { name: /深色主题|浅色主题/ }).click()
-  await page.waitForFunction(previous => document.querySelector('.docs-code-widget .n-code')?.style.getPropertyValue('--n-text-color') !== previous, codeColor)
-  await page.getByRole('button', { name: /深色主题|浅色主题/ }).click()
-  await page.locator('.menu-button').click()
-  await page.keyboard.press('Escape')
+  await selectTheme('dark')
+  await selectTheme('light')
   await page.setViewportSize({ width: 667, height: 375 })
   await tocTrigger.click()
   await page.waitForTimeout(400)
@@ -354,11 +384,26 @@ let browser
   assert(shortDrawer.y + shortDrawer.height <= 375 - 20, 'Short landscape drawer leaves uncovered mask area')
   const compactHeight = await tocDrawer.locator('.mobile-toc-drawer a').first().evaluate(el => el.getBoundingClientRect().height)
   assert(compactHeight <= 40, 'TOC entries use compact spacing')
-  await page.goto(origin + '/docs/questions?from=legacy#answer')
-  await page.waitForURL('**/docs/faq/account?from=legacy#answer')
-  await page.locator('.docs-page .markdown-container h1').waitFor()
+  await page.goto(origin + '/docs/usage/common?from=legacy#first')
+  await page.waitForURL('**/docs/introduction?from=legacy#first')
+  await page.locator('.docs-page h1').filter({ hasText: '项目介绍' }).waitFor()
+  await page.goto(origin + '/docs/')
+  await page.waitForURL('**/docs/introduction')
+  await page.locator('.docs-page h1').filter({ hasText: '项目介绍' }).waitFor()
   await page.goto(origin + '/')
   await page.locator('.portal-hero h1').waitFor()
+  await page.getByRole('button', { name: '打开完整文档目录' }).click()
+  const homeDocsMenu = page.locator('.n-popover:visible').filter({ has: page.locator('.n-menu') }).last()
+  assert.equal(await homeDocsMenu.locator('.n-menu a[href^="/docs/"]').count(), 29, 'Home page also exposes the complete document index')
+  await page.keyboard.press('Escape')
+  assert.equal(await page.locator('.hero-actions a').first().getAttribute('href'), '/docs/introduction', 'Homepage quick-start CTA opens the first article')
+  await selectTheme('light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.waitForFunction(() => !document.querySelector('.portal-shell')?.classList.contains('is-dark'), null, { timeout: 3000 })
+  await selectTheme('system')
+  await page.waitForFunction(() => document.querySelector('.portal-shell')?.classList.contains('is-dark'))
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.waitForFunction(() => !document.querySelector('.portal-shell')?.classList.contains('is-dark'))
   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://docs.mefrp.com/')
   assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), manifest.unlisted.find(page => page.path === 'home').description)
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'), 'index,follow')
@@ -367,18 +412,39 @@ let browser
   assert.equal(await page.locator('.docs-sider').count(), 0)
   await page.locator('.page-loading-screen').waitFor({ state: 'hidden' })
   await page.reload()
+  const contrast = await page.locator('.portal-shell').evaluate(el => {
+    const parse = value => value.match(/[\d.]+/g).slice(0, 3).map(Number).map(channel => {
+      channel /= 255
+      return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+    })
+    const lum = value => { const [r, g, b] = parse(value); return .2126 * r + .7152 * g + .0722 * b }
+    const style = getComputedStyle(el)
+    const text = lum(getComputedStyle(el.querySelector('.hero-copy > p')).color)
+    const background = lum(style.backgroundColor)
+    return { foreground: text, background, ratio: (Math.max(text, background) + .05) / (Math.min(text, background) + .05) }
+  })
+  assert(contrast.ratio >= 4.5, 'Homepage primary text meets WCAG AA contrast')
   await page.locator('.portal-shell').waitFor()
-  assert.equal(await page.evaluate(() => localStorage.getItem('docs-theme')), 'dark', 'Theme preference survives reload')
+  assert.equal(await page.evaluate(() => localStorage.getItem('docs-theme')), 'system', 'System mode persists across reload')
   assert.deepEqual(errors, [])
   assert.deepEqual(apiRequests, [], 'Standalone documentation never requests panel APIs')
   await context.close()
   const noJs = await browser.newContext({ javaScriptEnabled: false, serviceWorkers: 'block' })
   await noJs.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort())
   const staticPage = await noJs.newPage()
+  await staticPage.emulateMedia({ colorScheme: 'dark' })
   for (const { path } of allPages.filter(page => page.path !== 'home')) {
     const response = await staticPage.goto(`${origin}/docs/${path}`)
     assert.equal(response.status(), 200)
     assert(await staticPage.locator('#docs-static article').isVisible())
+    if (path === 'introduction') {
+      const staticTheme = await staticPage.locator('#docs-static').evaluate(el => ({
+        background: getComputedStyle(el).backgroundColor,
+        color: getComputedStyle(el).color
+      }))
+      assert.equal(staticTheme.background, 'rgb(17, 26, 37)', 'No-JavaScript documents follow the dark system theme')
+      assert.equal(staticTheme.color, 'rgb(245, 247, 251)')
+    }
     assert(await staticPage.locator('#docs-static nav a').count() >= 21)
     assert((await staticPage.locator('#docs-static article').innerText()).length > 0)
     assert.equal(await staticPage.locator('link[rel="canonical"]').getAttribute('href'), `https://docs.mefrp.com/docs/${path}`)
@@ -389,13 +455,14 @@ let browser
     assert.equal(await staticPage.locator('meta[property="og:title"]').getAttribute('content'), await staticPage.title())
     assert.equal(await staticPage.locator('meta[name="twitter:title"]').getAttribute('content'), await staticPage.title())
     assert.equal(await staticPage.locator('#docs-structured-data').count(), 1)
-    if (path === 'usage/common') {
+    if (path === 'usage/client') {
       assert(await staticPage.locator('#docs-static .docs-code-block pre code').count() > 0, 'Static code remains readable without JavaScript')
     }
   }
   const missing = await staticPage.goto(`${origin}/docs/does-not-exist`)
   assert.equal(missing.status(), 404)
   const homeResponse = await staticPage.goto(origin + '/')
+  assert.equal(await staticPage.locator('#portal-static').evaluate(el => getComputedStyle(el).color), 'rgb(245, 247, 251)', 'No-JavaScript home follows system theme')
   assert.equal(homeResponse.status(), 200)
   assert.equal(await staticPage.locator('title').textContent(), '幻缘映射 V5 | 幻缘映射 V5 使用文档')
   assert.equal(await staticPage.locator('link[rel="canonical"]').getAttribute('href'), 'https://docs.mefrp.com/')

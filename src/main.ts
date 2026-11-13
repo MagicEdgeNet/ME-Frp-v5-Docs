@@ -1,4 +1,4 @@
-import { createApp, computed, ref } from 'vue'
+import { createApp, computed, ref, watch } from 'vue'
 import { darkTheme } from 'naive-ui'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
@@ -7,20 +7,26 @@ import Docs from './views/Docs.vue'
 import DocPage from './views/DocPage.vue'
 import NotFound from './views/NotFound.vue'
 import { docPages, docsManifest, docPath, findDocPage, updateDocSeo } from './shared/docs'
-import type { ThemeContext } from './types/theme'
+import type { ThemeContext, ThemeMode } from './types/theme'
 import { beginPageNavigation, completePageNavigation, failActivePageNavigation, shouldPlayPageLoadingAnimation } from './shared/state/pageLoadingProgress'
 import './assets/styles/global.scss'
 
-const savedTheme = localStorage.getItem('docs-theme')
-const isDarkMode = ref(savedTheme === 'dark' || (savedTheme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches))
-const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value
-  localStorage.setItem('docs-theme', isDarkMode.value ? 'dark' : 'light')
+const storedTheme = localStorage.getItem('docs-theme')
+const mode = ref<ThemeMode>(storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'system')
+const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+const systemDark = ref(colorScheme.matches)
+const isDarkMode = computed(() => mode.value === 'system' ? systemDark.value : mode.value === 'dark')
+const setMode = (nextMode: ThemeMode) => {
+  mode.value = nextMode
+  localStorage.setItem('docs-theme', nextMode)
 }
+colorScheme.addEventListener('change', event => { systemDark.value = event.matches })
+watch(isDarkMode, dark => document.documentElement.dataset.theme = dark ? 'dark' : 'light', { immediate: true })
 const themeContext: ThemeContext = {
   isDarkMode,
+  mode,
   theme: computed(() => isDarkMode.value ? darkTheme : null),
-  toggleTheme,
+  setMode,
 }
 
 const routes = [

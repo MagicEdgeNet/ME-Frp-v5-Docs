@@ -1,10 +1,13 @@
-import type { Ref, ComputedRef } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 import type { GlobalTheme } from 'naive-ui'
 
+export type ThemeMode = 'system' | 'light' | 'dark'
+
 export interface ThemeContext {
-  isDarkMode: Ref<boolean>
+  isDarkMode: Ref<boolean> | ComputedRef<boolean>
+  mode: Ref<ThemeMode>
   theme: ComputedRef<GlobalTheme | null>
-  toggleTheme: () => void
+  setMode: (mode: ThemeMode) => void
 }
 
 export const THEME_KEY = 'theme' as const

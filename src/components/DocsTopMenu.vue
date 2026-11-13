@@ -5,12 +5,14 @@
       <div class="navbar-content">
         <div class="logo"><RouterLink to="/" class="logo-link" aria-label="ME Frp 文档首页"><AppLogo /><span class="logo-text"><b>幻缘映射</b><em>文档中心</em></span></RouterLink></div>
         <nav class="nav-links" aria-label="文档导航">
-          <RouterLink to="/"><NButton :bordered="false">首页</NButton></RouterLink>
-          <RouterLink :to="docPath('guide/quick-start')"><NButton :bordered="false">快速开始</NButton></RouterLink>
-          <RouterLink :to="docPath('concepts/overview')"><NButton :bordered="false">基础概念</NButton></RouterLink>
-          <RouterLink :to="docPath('usage/common')"><NButton :bordered="false">使用教程</NButton></RouterLink>
+          <RouterLink :to="docPath('introduction')"><NButton :bordered="false">快速开始</NButton></RouterLink>
+          <NPopover v-model:show="showDesktopMenu" trigger="click" placement="bottom-end" :show-arrow="false">
+            <template #trigger><NButton quaternary aria-label="打开完整文档目录">更多文档</NButton></template>
+            <NScrollbar class="docs-desktop-nav-scroll" style="width: min(380px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
+              <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
+            </NScrollbar>
+          </NPopover>
           <NButton quaternary aria-label="搜索文档" @click="openSearch"><template #icon><NIcon :component="SearchOutline" /></template>搜索文档</NButton>
-          <NButton quaternary circle :aria-label="isDarkMode ? '切换浅色主题' : '切换深色主题'" @click="toggleTheme"><NIcon :component="isDarkMode ? SunnyOutline : MoonOutline" /></NButton>
           <NButton secondary type="primary" tag="a" href="https://www.mefrp.com/dashboard">管理面板</NButton>
         </nav>
       </div>
@@ -20,15 +22,14 @@
         <div class="mobile-left"><RouterLink to="/" class="logo-link" aria-label="ME Frp 文档首页"><AppLogo /><span class="logo-text"><b>幻缘映射</b><em>文档</em></span></RouterLink></div>
         <div class="mobile-right" @click.stop>
           <NButton text class="header-action" aria-label="搜索文档" @click="openSearch"><NIcon :size="20" :component="SearchOutline" /></NButton>
-          <NButton text class="header-action" :aria-label="isDarkMode ? '切换浅色主题' : '切换深色主题'" @click="toggleTheme"><NIcon :size="20" :component="isDarkMode ? SunnyOutline : MoonOutline" /></NButton>
-          <NPopover v-model:show="showMenu" trigger="click" placement="bottom-end" :show-arrow="false">
+          <NPopover v-model:show="showMobileMenu" trigger="click" placement="bottom-end" :show-arrow="false">
             <template #trigger>
-              <NButton text class="header-action menu-button" aria-label="打开文档导航菜单" :aria-expanded="showMenu">
+              <NButton text class="header-action menu-button" aria-label="打开完整文档目录" :aria-expanded="showMobileMenu">
                 <NIcon :size="22" :component="MenuOutline" />
               </NButton>
             </template>
-            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(300px, calc(100vw - 32px)); max-height: min(70dvh, 600px)" :native-scrollbar="false">
-              <NMenu :options="menuOptions" :value="currentMenuKey" @update:value="handleMenuSelect" />
+            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(360px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
+              <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
             </NScrollbar>
           </NPopover>
         </div>
@@ -67,21 +68,22 @@
 
 <script setup lang="ts">
 import { computed, h, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { NButton, NConfigProvider, NIcon, NInput, NLayoutHeader, NMenu, NModal, NPopover, NScrollbar } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import { BookOutline, CloseOutline, CodeSlashOutline, LogoGithub, MenuOutline, MoonOutline, RocketOutline, SearchOutline, SpeedometerOutline, SunnyOutline } from '@vicons/ionicons5'
+import { BookOutline, CloseOutline, LogoGithub, MenuOutline, SearchOutline, SpeedometerOutline } from '@vicons/ionicons5'
 import AppLogo from './AppLogo.vue'
-import { docPath } from '../shared/docs'
+import { docGroups, docPath } from '../shared/docs'
+import { createDocsMenuOptions, docsMenuActiveKey, docsMenuExpandedKeys } from '../shared/docsMenu'
 import { loadSearchIndex as fetchSearchIndex, searchDocuments, type SearchDocument } from '../shared/search'
 import type { ThemeContext } from '../types/theme'
 import { getExemptedTheme } from '../constants/theme'
 
 const theme = inject<ThemeContext | null>('theme', null)
 const isDarkMode = theme?.isDarkMode ?? ref(false)
-const toggleTheme = theme?.toggleTheme ?? (() => {})
 const router = useRouter()
-const showMenu = ref(false)
+const showDesktopMenu = ref(false)
+const showMobileMenu = ref(false)
 const searchOpen = ref(false)
 const query = ref('')
 const searchInput = ref<InstanceType<typeof NInput> | null>(null)
@@ -90,23 +92,30 @@ const searchLoading = ref(false)
 const searchError = ref('')
 const activeResult = ref(0)
 const results = computed(() => searchDocuments(query.value, searchIndex.value || []).slice(0, 12))
-const menuItems = [
-  { label: '首页', path: '/', icon: BookOutline },
-  { label: '快速开始', path: docPath('guide/quick-start'), icon: RocketOutline },
-  { label: '基础概念', path: docPath('concepts/overview'), icon: CodeSlashOutline },
-  { label: '使用教程', path: docPath('usage/common'), icon: BookOutline },
-]
 const menuOptions: MenuOption[] = [
-  ...menuItems.map(item => ({ label: item.label, key: item.path, icon: () => h(NIcon, null, { default: () => h(item.icon) }) })),
-  { type: 'divider', key: 'docs-nav-divider' },
+  { key: 'docs-home', label: () => h(RouterLink, { to: '/', onClick: closeMenus }, { default: () => '文档首页' }), icon: () => h(NIcon, null, { default: () => h(BookOutline) }) },
+  { type: 'divider', key: 'docs-menu-divider-before-index' },
+  ...createDocsMenuOptions(closeMenus),
+  { type: 'divider', key: 'docs-menu-divider-after-index' },
   { label: '管理面板', key: 'https://www.mefrp.com/dashboard', icon: () => h(NIcon, null, { default: () => h(SpeedometerOutline) }) },
   { label: 'GitHub', key: 'https://github.com/MagicEdgeNet/ME-Frp-v5-Docs', icon: () => h(NIcon, null, { default: () => h(LogoGithub) }) },
 ]
-const currentMenuKey = computed(() => menuItems.find(item => item.path === router.currentRoute.value.path)?.path || '')
+const currentMenuKey = computed(() => docsMenuActiveKey(router.currentRoute.value.path))
+function closeMenus() {
+  showDesktopMenu.value = false
+  showMobileMenu.value = false
+}
 function handleMenuSelect(key: string) {
-  showMenu.value = false
-  if (key.startsWith('https://')) window.location.assign(key)
-  else void router.push(key)
+  if (key.startsWith('https://')) {
+    closeMenus()
+    window.location.assign(key)
+  } else if (key === 'docs-home') {
+    closeMenus()
+    void router.push('/')
+  } else if (docGroups.some(group => group.pages.some(page => page.path === key))) {
+    closeMenus()
+    void router.push(docPath(key))
+  }
 }
 let lastSearchTrigger: HTMLElement | undefined
 async function focusSearchInput() {
@@ -115,7 +124,7 @@ async function focusSearchInput() {
 }
 function openSearch(event: MouseEvent) {
   lastSearchTrigger = event.currentTarget as HTMLElement
-  showMenu.value = false
+  closeMenus()
   searchOpen.value = true
 }
 async function loadSearchIndex() {
@@ -155,7 +164,7 @@ function onKeydown(event: KeyboardEvent) {
     event.preventDefault()
     searchOpen.value = !searchOpen.value
   }
-  if (event.key === 'Escape') showMenu.value = false
+  if (event.key === 'Escape') closeMenus()
 }
 watch(query, () => { activeResult.value = 0 })
 watch(activeResult, async index => {
@@ -170,7 +179,7 @@ watch(searchOpen, async open => {
     if (lastSearchTrigger?.isConnected) lastSearchTrigger.focus()
     return
   }
-  showMenu.value = false
+  closeMenus()
   void loadSearchIndex()
 })
 onMounted(() => { document.addEventListener('keydown', onKeydown) })

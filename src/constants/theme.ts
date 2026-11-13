@@ -1,29 +1,29 @@
 import type { GlobalThemeOverrides } from 'naive-ui'
-const baseFont = { fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', borderRadius: '7px', primaryColor: '#2196f3', primaryColorHover: '#42a5f5', primaryColorPressed: '#1976d2', primaryColorSuppl: '#90caf9' }
+const baseFont = { fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', borderRadius: '7px', primaryColor: '#1d4ed8', primaryColorHover: '#1742b5', primaryColorPressed: '#153a9b', primaryColorSuppl: '#1546a0' }
 export const getExemptedTheme = (): GlobalThemeOverrides => ({ common: baseFont })
 export const workbenchPalette = {
   light: {
     canvas: '#f5f7fa',
     surface: '#ffffff',
     surfaceMuted: '#eef2f6',
-    ink: '#162235',
-    muted: '#667085',
-    faint: '#98a2b3',
-    line: '#dce2e9',
-    lineStrong: '#c5ced9',
-    accent: '#2563eb',
-    accentSoft: '#e7efff'
+    ink: '#111827',
+    muted: '#475569',
+    faint: '#4b5563',
+    line: '#c7d0dc',
+    lineStrong: '#aeb9c8',
+    accent: '#1d4ed8',
+    accentSoft: '#e5edff'
   },
   dark: {
     canvas: '#0f141c',
     surface: '#151c26',
     surfaceMuted: '#1c2633',
-    ink: '#f3f6fa',
-    muted: '#a7b2c1',
-    faint: '#758294',
-    line: '#2a3645',
-    lineStrong: '#3a4a5e',
-    accent: '#72a7ff',
+    ink: '#f5f7fb',
+    muted: '#c3ccd7',
+    faint: '#a9b6c5',
+    line: '#334155',
+    lineStrong: '#475569',
+    accent: '#8ab8ff',
     accentSoft: '#1d3151'
   }
 } as const
@@ -42,10 +42,11 @@ export function getWorkbenchThemeOverrides(isDark: boolean): GlobalThemeOverride
       actionColor: palette.surfaceMuted,
       borderColor: palette.line,
       dividerColor: palette.line,
-      // 只强化一级文字（用首页的 --ink），二三级文字仍用 naive 默认值，
-      // 避免暗色下次要文字被压暗、整体观感发灰
+      // Use the shared palette for primary, secondary and tertiary interface text.
       textColorBase: palette.ink,
-      textColor1: palette.ink
+      textColor1: palette.ink,
+      textColor2: palette.muted,
+      textColor3: palette.faint
     }
   }
 }

@@ -10,44 +10,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h, ref, watch, type Component } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import { NConfigProvider, NMenu, NScrollbar, NIcon, type MenuOption } from 'naive-ui'
-import {
-  AlertCircleOutline, DocumentLockOutline, InformationCircleOutline, RocketOutline,
-  PersonOutline, WifiOutline, PhonePortraitOutline, ShieldCheckmarkOutline, GlobeOutline,
-  HelpCircleOutline, AppsOutline, GameControllerOutline, DesktopOutline, TerminalOutline,
-  FolderOutline, CodeSlashOutline, ServerOutline
-} from '@vicons/ionicons5'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { NConfigProvider, NMenu, NScrollbar } from 'naive-ui'
 import { getExemptedTheme } from '../constants/theme'
-import { docGroups, docPath } from '../shared/docs'
+import { createDocsMenuOptions, docsMenuActiveKey, docsMenuExpandedKeys } from '../shared/docsMenu'
 
 defineProps<{ collapsed?: boolean }>()
 const emit = defineEmits(['menu-click'])
 const route = useRoute()
-const activeKey = computed(() => route.path.replace(/^\/docs\//, '').replace(/\/$/, ''))
-const expandedKeys = ref(docGroups.filter(group => !group.standalone).map(group => group.id))
-const icons: Record<string, Component> = {
-  AlertCircleOutline, DocumentLockOutline, InformationCircleOutline, RocketOutline,
-  PersonOutline, WifiOutline, PhonePortraitOutline, ShieldCheckmarkOutline, GlobeOutline,
-  HelpCircleOutline, AppsOutline, GameControllerOutline, DesktopOutline, TerminalOutline,
-  FolderOutline, CodeSlashOutline, ServerOutline
-}
-const renderIcon = (name?: string) => () => h(NIcon, null, { default: () => h(icons[name || ''] || DocumentLockOutline) })
-const pageOption = (page: (typeof docGroups)[number]['pages'][number]): MenuOption => ({
-  key: page.path,
-  label: () => h(RouterLink, { to: docPath(page.path), onClick: () => emit('menu-click') }, { default: () => page.navTitle || page.title }),
-  icon: renderIcon(page.icon)
-})
-const menuOptions: MenuOption[] = docGroups.map(group => group.standalone ? pageOption(group.pages[0]) : ({
-  key: group.id,
-  label: group.title,
-  icon: renderIcon(group.icon),
-  children: group.pages.map(pageOption)
-}))
+const activeKey = computed(() => docsMenuActiveKey(route.path))
+const expandedKeys = ref([...docsMenuExpandedKeys])
+const menuOptions = createDocsMenuOptions(() => emit('menu-click'))
 watch(activeKey, key => {
-  const group = docGroups.find(group => group.pages.some(page => page.path === key))
-  if (group && !expandedKeys.value.includes(group.id)) expandedKeys.value.push(group.id)
+  const group = menuOptions.find(option => option.children?.some(child => child.key === key))
+  if (group && !expandedKeys.value.includes(String(group.key))) expandedKeys.value.push(String(group.key))
 })
 </script>
 

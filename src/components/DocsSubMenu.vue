@@ -69,7 +69,7 @@ const drawerTop = ref(104)
 const route = useRoute()
 const currentTitle = computed(() => (route.meta.title as string) || '文档')
 const viewportHeight = ref(window.innerHeight)
-const drawerHeight = computed(() => Math.max(120, Math.min(640, viewportHeight.value - drawerTop.value - 24)))
+const drawerHeight = computed(() => Math.max(120, Math.min(427, viewportHeight.value - drawerTop.value - 24)))
 
 const updateDrawerTop = () => {
   if (barRef.value) drawerTop.value = Math.round(barRef.value.getBoundingClientRect().bottom)

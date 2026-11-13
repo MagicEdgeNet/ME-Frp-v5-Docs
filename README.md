@@ -33,7 +33,7 @@ MEFRP_PREVIEW_ORIGIN=http://127.0.0.1:4173 node tests/acceptance/pull-to-refresh
 ## 目录
 
 - `manifest.json`：分组、导航顺序、标题、摘要、入口、重定向和目录层级。
-- `pages/`：Markdown 正文；`pages/usage/common.md` 对应 `/docs/usage/common`。
+- `pages/`：Markdown 正文；`pages/usage/client.md` 对应 `/docs/usage/client`；旧路径 `/docs/usage/common` 重定向到第一篇「项目介绍」。
 - `assets/`：文档图片及附件，经 `/docs-assets/文件名` 引用。
 - `src/`：文档布局、导航、Markdown 渲染、主题、图片预览、代码/表格组件和下拉刷新。
 - `scripts/check.mjs`：无第三方依赖的内容结构检查。

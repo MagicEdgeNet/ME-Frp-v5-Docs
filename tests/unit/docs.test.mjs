@@ -84,10 +84,10 @@ test('headings and alert bodies use one compiler; duplicate headings get distinc
 })
 
 test('panel links use the main site while document links stay local', () => {
-  const page = renderDocument('[下载](/dashboard/downloads) [登录](/auth/login) [文档](/docs/usage/common)')
+  const page = renderDocument('[下载](/dashboard/downloads) [登录](/auth/login) [文档](/docs/introduction)')
   assert.match(page.html, /href="https:\/\/www\.mefrp\.com\/dashboard\/downloads"/)
   assert.match(page.html, /href="https:\/\/www\.mefrp\.com\/auth\/login"/)
-  assert.match(page.html, /href="\/docs\/usage\/common"/)
+  assert.match(page.html, /href="\/docs\/introduction"/)
 })
 
 test('community Markdown cannot inject scripts or executable links into static output', () => {

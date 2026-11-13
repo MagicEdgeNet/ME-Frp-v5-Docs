@@ -43,31 +43,45 @@
 
 :global(.mobile-toc-drawer-panel) {
   --docs-bg: #fff;
-  --docs-line: #dce2e9;
-  --docs-muted: #667085;
-  --docs-accent: #2563eb;
-  --docs-ink: #162235;
+  --docs-line: #c7d0dc;
+  --docs-muted: #475569;
+  --docs-accent: #1d4ed8;
+  --docs-ink: #111827;
 }
 :global(.mobile-toc-drawer-panel.is-dark) {
   --docs-bg: #151c26;
-  --docs-line: #2a3645;
-  --docs-muted: #a7b2c1;
-  --docs-accent: #72a7ff;
-  --docs-ink: #f3f6fa;
+  --docs-line: #334155;
+  --docs-muted: #c3ccd7;
+  --docs-accent: #8ab8ff;
+  --docs-ink: #f5f7fb;
 }
 :global(.mobile-toc-drawer-panel .n-drawer-header) { display: none; }
 :global(.mobile-toc-drawer-panel .n-drawer-content) {
+  position: relative;
   overflow: hidden;
-  border-bottom: 1px solid color-mix(in srgb, var(--docs-line) 82%, transparent);
-  background: color-mix(in srgb, var(--docs-bg) 74%, transparent) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  backdrop-filter: blur(22px) saturate(175%);
-  box-shadow: 0 18px 42px color-mix(in srgb, var(--docs-ink) 16%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--docs-line) 72%, transparent);
+  background: rgba(255, 255, 255, .48) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  backdrop-filter: blur(32px) saturate(190%);
+  box-shadow: 0 18px 42px rgba(18, 32, 52, .2), inset 0 1px rgba(255, 255, 255, .72);
+}
+:global(.mobile-toc-drawer-panel.is-dark .n-drawer-content) {
+  background: rgba(15, 22, 32, .52) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  backdrop-filter: blur(32px) saturate(190%);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .34), inset 0 1px rgba(255, 255, 255, .12);
+}
+:global(.mobile-toc-drawer-panel .n-drawer-body-wrapper),
+:global(.mobile-toc-drawer-panel .n-drawer-body-content-wrapper),
+:global(.mobile-toc-drawer-panel .n-drawer-body-content),
+:global(.mobile-toc-drawer-panel .n-scrollbar-container) {
+  background: transparent !important;
 }
 :global(.mobile-toc-drawer-panel .n-drawer-body-content-wrapper) {
   overflow: auto;
   padding-top: 0;
-  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 :global(.mobile-toc-drawer-panel .n-drawer-body-content) { background: transparent; }
 

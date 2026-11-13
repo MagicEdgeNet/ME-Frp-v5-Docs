@@ -8,7 +8,7 @@
           <h1>让内网服务，<br /><span>随时随地安全可达。</span></h1>
           <p>了解内网穿透的工作方式，选择适合的连接类型，快速启动你的第一条隧道。</p>
           <div class="hero-actions">
-            <NButton type="primary" size="large" tag="a" :href="docPath('guide/quick-start')">开始快速配置 <template #icon><NIcon :component="ArrowForwardOutline" /></template></NButton>
+            <NButton type="primary" size="large" tag="a" :href="docPath('introduction')">开始快速配置 <template #icon><NIcon :component="ArrowForwardOutline" /></template></NButton>
             <NButton quaternary size="large" tag="a" :href="docPath('introduction')">了解 ME Frp</NButton>
           </div>
         </div>
@@ -68,7 +68,7 @@ const iconFor = (name?: string) => iconMap[name || ''] || DocumentTextOutline
 const learningPath = [
   { step: '01', path: 'concepts/overview', title: '理解内网穿透', description: '连接如何从公网抵达内网服务' },
   { step: '02', path: 'concepts/frpc-frps', title: '认识 Frpc 与 Frps', description: '客户端和节点服务端各自负责什么' },
-  { step: '03', path: 'guide/quick-start', title: '启动第一条隧道', description: '创建配置并从外部网络验证' },
+  { step: '03', path: 'introduction', title: '从项目介绍开始', description: '创建配置并从外部网络验证' },
 ]
 const protocols = [
   { name: 'TCP', use: '通用连接', example: 'SSH · RDP · Minecraft' },

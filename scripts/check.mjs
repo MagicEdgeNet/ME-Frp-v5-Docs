@@ -27,6 +27,8 @@ for (const page of pages) {
   contents.push({ path: page.path, text })
 }
 assert(paths.has(manifest.entry), '入口文档不存在')
+assert.equal(manifest.entry, 'introduction', '全站第一篇作为文档入口')
+assert.equal(manifest.redirects?.['usage/common'], 'introduction', '旧教程 URL 统一跳转全站第一篇')
 for (const [from, to] of Object.entries(manifest.redirects || {})) assert(pathPattern.test(from) && !paths.has(from) && paths.has(to), `重定向无效: ${from}`)
 for (const page of contents) {
   for (const match of page.text.matchAll(/\]\((\/docs\/[^)\s#]+)(?:#[^)]*)?\)/g)) {

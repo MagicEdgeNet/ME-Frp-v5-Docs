@@ -47,4 +47,4 @@ sequenceDiagram
 
 不要把客户端版本、服务端版本和 ME Frp 平台版本混为一谈。客户端升级时应使用平台提供或明确支持的版本。
 
-[通用客户端教程](/docs/usage/common)　[配置与启动](/docs/guide/configuration)　[术语表](/docs/concepts/terms)
+[通用客户端教程](/docs/introduction)　[配置与启动](/docs/guide/configuration)　[术语表](/docs/concepts/terms)

@@ -106,7 +106,7 @@ netstat -an|findstr :22|findstr LISTENING
 
 ## 启动隧道
 
-请您阅读 [启动隧道教程 - 通用客户端](/docs/usage/common) 快速上手，本教程部分不再赘述。
+请您阅读 [启动隧道教程 - 通用客户端](/docs/introduction) 快速上手，本教程部分不再赘述。
 
 日志中会出现一行 `您可以使用 [xxx] 访问您的服务` 的提示，您可以使用此地址进行 SSH 连接。
 

@@ -24,7 +24,7 @@
 
 ## 安装并启动客户端
 
-从[客户端教程](/docs/usage/common)选择适合系统的版本，使用面板提供的配置启动 `Frpc`。也可选择 [Docker](/docs/usage/docker) 或 [fnOS](/docs/usage/fnnas) 方式。
+从[客户端教程](/docs/introduction)选择适合系统的版本，使用面板提供的配置启动 `Frpc`。也可选择 [Docker](/docs/usage/docker) 或 [fnOS](/docs/usage/fnnas) 方式。
 
 客户端成功连接后，面板应显示隧道在线。若连接失败，先检查配置是否属于当前账户和节点、系统时间是否正确，以及出站网络是否允许客户端连接。
 

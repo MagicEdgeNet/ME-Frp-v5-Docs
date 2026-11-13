@@ -161,8 +161,8 @@ test('品牌动画仅用于首次进入、首页和认证边界', () => {
     ['/dashboard/home', '/auth/login', false, undefined, true],
     ['/dashboard/manage-proxies', '/dashboard/home', false, undefined, false],
     ['/docs/usage', '/dashboard/home', false, undefined, false],
-    ['/docs/usage/common', '/', true, 'navigate', true],
-    ['/docs/usage/common', '/', true, 'reload', false],
+    ['/docs/usage/client', '/', true, 'navigate', true],
+    ['/docs/usage/client', '/', true, 'reload', false],
   ]) assert.equal(api.shouldPlayPageLoadingAnimation(to, from, initial, navigationType), expected)
 })
 

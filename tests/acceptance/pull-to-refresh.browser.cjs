@@ -43,7 +43,7 @@ let browser
     }
   }
   for (const [path, selector, ready] of [
-    ['/docs/usage/common', '.docs-scroll > .n-scrollbar-container', '.docs-page .markdown-container h1'],
+    ['/docs/usage/client', '.docs-scroll > .n-scrollbar-container', '.docs-page .markdown-container h1'],
 
   ]) {
     await page.goto(origin + path, { waitUntil: 'domcontentloaded' })

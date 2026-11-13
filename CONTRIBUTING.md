@@ -29,7 +29,7 @@ node scripts/check.mjs
 - 代码块注明语言。不要把真实 Token、密码、内网拓扑、个人信息放进示例。
 - 使用标准 Markdown。提示框可使用 `:::info 标题` / `:::warning 标题` / `:::tip 标题`，并以独占一行的 `:::` 结束。
 - 不支持执行脚本、组件、任意 HTML 或 frontmatter。正文中的 HTML 会转义，不会执行。
-- 内部文档链接使用 `/docs/usage/common` 这样的稳定站点路径；不带 `.md`。
+- 内部文档链接使用 `/docs/usage/client` 这样的稳定站点路径；不带 `.md`。
 - 本页锚点与跨页锚点从标题生成；相同标题依次追加 `-2`、`-3`。修改标题后检查入链。
 - 新图片放入 `assets/`，用 `/docs-assets/截图名.png` 引用，写清楚替代文本。文件名保持简单，压缩后再提交。
 - 文档站部署到 `docs.mefrp.com`，构建产物为 `dist/`。提交后 CI 校验内容、单测及构建；主站无需同步 submodule 才能构建独立站。

@@ -6,7 +6,7 @@ ME Frp 是基于 Frp 的内网穿透服务。它让运行在家中、办公室�
 
 选择一个场景，先了解工作方式，再创建第一条隧道。
 
-[开始使用](/docs/guide/quick-start)　[浏览使用教程](/docs/usage/common)
+[开始使用](/docs/introduction)　[浏览使用教程](/docs/introduction)
 
 ## 工作方式
 
@@ -42,7 +42,7 @@ STCP、XTCP 和 SUDP 属于 Frp 上游类型，ME Frp 当前暂不支持，不�
 
 注册账户、下载匹配系统的客户端、创建隧道并启动连接。
 
-[打开快速开始](/docs/guide/quick-start)
+[打开快速开始](/docs/introduction)
 
 ### 了解已有概念
 
@@ -54,7 +54,7 @@ STCP、XTCP 和 SUDP 属于 Frp 上游类型，ME Frp 当前暂不支持，不�
 
 在通用客户端、Docker 或 fnOS 上配置 ME Frp。
 
-[客户端使用教程](/docs/usage/common)　[Docker](/docs/usage/docker)　[fnOS](/docs/usage/fnnas)
+[客户端使用教程](/docs/introduction)　[Docker](/docs/usage/docker)　[fnOS](/docs/usage/fnnas)
 
 ### 按场景配置
 
@@ -69,7 +69,7 @@ STCP、XTCP 和 SUDP 属于 Frp 上游类型，ME Frp 当前暂不支持，不�
 - [外网无法访问我的服务怎么办？](/docs/faq/site-inaccessible)
 - [如何快速定位启动报错？](/docs/errors)
 
-[浏览全部文档](/docs/usage/common)
+[浏览全部文档](/docs/introduction)
 
 ## 准备好创建隧道了吗？
 

@@ -35,7 +35,7 @@
       <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 98 : 59" />
     </div>
 
-    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="24">
+    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="88">
       <NButton quaternary circle class="docs-back-top-button" aria-label="回到顶部">
         <NIcon :component="ArrowUpOutline" />
       </NButton>
