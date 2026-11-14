@@ -30,9 +30,15 @@ let browser
   const errors = []
   const mermaidLayoutRequests = []
   const selectTheme = async mode => {
+    const followsDarkSystem = await page.evaluate(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const desiredDarkMode = mode === 'system' ? followsDarkSystem : mode === 'dark'
     await page.getByRole('button', { name: '网站设置' }).click()
-    const label = mode === 'system' ? '跟随系统' : mode === 'light' ? '浅色主题' : '深色主题'
-    await page.locator('.n-dropdown-menu:visible .n-dropdown-option').filter({ hasText: label }).click()
+    const toggle = page.getByRole('switch', { name: '切换深色模式' })
+    await toggle.waitFor({ state: 'visible' })
+    const isDarkMode = (await toggle.getAttribute('aria-checked')) === 'true'
+    if (isDarkMode !== desiredDarkMode) await toggle.click()
+    await page.waitForFunction(dark => (document.documentElement.dataset.theme === 'dark') === dark, desiredDarkMode)
+    await page.getByRole('button', { name: '网站设置' }).click()
     await page.locator('.n-dropdown-menu').waitFor({ state: 'hidden' })
   }
   page.on('request', request => {
@@ -399,11 +405,11 @@ let browser
   assert.equal(await page.locator('.hero-actions a').first().getAttribute('href'), '/docs/introduction', 'Homepage quick-start CTA opens the first article')
   await selectTheme('light')
   await page.emulateMedia({ colorScheme: 'dark' })
-  await page.waitForFunction(() => !document.querySelector('.portal-shell')?.classList.contains('is-dark'), null, { timeout: 3000 })
-  await selectTheme('system')
   await page.waitForFunction(() => document.querySelector('.portal-shell')?.classList.contains('is-dark'))
-  await page.emulateMedia({ colorScheme: 'light' })
-  await page.waitForFunction(() => !document.querySelector('.portal-shell')?.classList.contains('is-dark'))
+  await selectTheme('light')
+  await page.reload()
+  await page.locator('.portal-shell').waitFor()
+  await page.waitForFunction(() => document.querySelector('.portal-shell')?.classList.contains('is-dark'), null, { timeout: 3000 })
   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://docs.mefrp.com/')
   assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), manifest.unlisted.find(page => page.path === 'home').description)
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'), 'index,follow')
@@ -425,7 +431,7 @@ let browser
   })
   assert(contrast.ratio >= 4.5, 'Homepage primary text meets WCAG AA contrast')
   await page.locator('.portal-shell').waitFor()
-  assert.equal(await page.evaluate(() => localStorage.getItem('docs-theme')), 'system', 'System mode persists across reload')
+  assert.equal(await page.evaluate(() => localStorage.getItem('docs-theme')), null, 'Theme selection is not persisted across reloads')
   assert.deepEqual(errors, [])
   assert.deepEqual(apiRequests, [], 'Standalone documentation never requests panel APIs')
   await context.close()

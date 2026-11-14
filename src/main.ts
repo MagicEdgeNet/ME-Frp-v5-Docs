@@ -7,26 +7,23 @@ import Docs from './views/Docs.vue'
 import DocPage from './views/DocPage.vue'
 import NotFound from './views/NotFound.vue'
 import { docPages, docsManifest, docPath, findDocPage, updateDocSeo } from './shared/docs'
-import type { ThemeContext, ThemeMode } from './types/theme'
+import type { ThemeContext } from './types/theme'
 import { beginPageNavigation, completePageNavigation, failActivePageNavigation, shouldPlayPageLoadingAnimation } from './shared/state/pageLoadingProgress'
 import './assets/styles/global.scss'
 
-const storedTheme = localStorage.getItem('docs-theme')
-const mode = ref<ThemeMode>(storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'system')
-const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
-const systemDark = ref(colorScheme.matches)
-const isDarkMode = computed(() => mode.value === 'system' ? systemDark.value : mode.value === 'dark')
-const setMode = (nextMode: ThemeMode) => {
-  mode.value = nextMode
-  localStorage.setItem('docs-theme', nextMode)
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)')
+const isDarkMode = ref(prefersDark.matches)
+const toggleTheme = () => {
+  isDarkMode.value = !isDarkMode.value
 }
-colorScheme.addEventListener('change', event => { systemDark.value = event.matches })
+prefersDark.addEventListener('change', event => {
+  isDarkMode.value = event.matches
+})
 watch(isDarkMode, dark => document.documentElement.dataset.theme = dark ? 'dark' : 'light', { immediate: true })
 const themeContext: ThemeContext = {
   isDarkMode,
-  mode,
   theme: computed(() => isDarkMode.value ? darkTheme : null),
-  setMode,
+  toggleTheme,
 }
 
 const routes = [

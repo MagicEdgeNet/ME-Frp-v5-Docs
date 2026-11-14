@@ -8,9 +8,9 @@ export const workbenchPalette = {
     surfaceMuted: '#eef2f6',
     ink: '#111827',
     muted: '#475569',
-    faint: '#4b5563',
+    faint: '#596579',
     line: '#c7d0dc',
-    lineStrong: '#aeb9c8',
+    lineStrong: '#9aa8ba',
     accent: '#1d4ed8',
     accentSoft: '#e5edff'
   },
