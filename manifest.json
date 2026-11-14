@@ -1,10 +1,28 @@
 {
   "version": 1,
   "title": "幻缘映射 V5 使用文档",
-  "entry": "usage/common",
+  "entry": "introduction",
   "toc": { "minDepth": 2, "maxDepth": 3 },
-  "redirects": { "questions": "faq/account" },
+  "redirects": { "questions": "faq/account", "usage/common": "introduction" },
   "groups": [
+    {
+      "id": "basics", "title": "认识 ME Frp", "icon": "BookOutline",
+      "pages": [
+        { "path": "introduction", "title": "项目介绍", "icon": "BookOutline", "description": "了解 ME Frp 是什么、适合解决哪些问题，以及一条隧道如何把内网服务带到公网。" },
+        { "path": "concepts/overview", "title": "内网穿透是什么", "navTitle": "内网穿透概念", "icon": "GitNetworkOutline", "description": "从网络位置、节点和连接关系理解内网穿透的工作方式。" },
+        { "path": "concepts/frpc-frps", "title": "Frpc 与 Frps", "icon": "ServerOutline", "description": "理解 Frpc 客户端、Frps 服务端、控制连接和数据连接之间的关系。" },
+        { "path": "concepts/tunnel", "title": "隧道与代理", "icon": "GitNetworkOutline", "description": "认识隧道、代理、节点、端口、域名和流量等 ME Frp 核心概念。" },
+        { "path": "concepts/protocols", "title": "穿透类型", "icon": "CodeSlashOutline", "description": "了解 ME Frp 当前支持的 TCP、UDP、HTTP 和 HTTPS，并确认 STCP、XTCP、SUDP 暂不支持。" },
+        { "path": "concepts/terms", "title": "术语表", "icon": "DocumentTextOutline", "description": "ME Frp 和 Frp 文档中常见术语的快速定义与相互关系。" }
+      ]
+    },
+    {
+      "id": "guide", "title": "开始使用", "icon": "RocketOutline",
+      "pages": [
+        { "path": "guide/quick-start", "title": "快速开始", "icon": "RocketOutline", "description": "从注册账户、下载客户端到启动第一条隧道的完整入门路径。" },
+        { "path": "guide/configuration", "title": "配置与启动", "icon": "ConstructOutline", "description": "了解配置文件、启动参数、快捷启动和不同客户端运行方式。" }
+      ]
+    },
     {
       "id": "errors", "title": "常见报错速查", "icon": "DocumentLockOutline", "standalone": true,
       "pages": [
@@ -14,7 +32,7 @@
     {
       "id": "usage", "title": "启动隧道教程", "icon": "RocketOutline",
       "pages": [
-        { "path": "usage/common", "title": "通用客户端", "icon": "CodeSlashOutline", "description": "ME Frp 通用客户端教程——一键下载并运行客户端，快速完成隧道映射配置。" },
+        { "path": "usage/client", "title": "通用客户端", "icon": "CodeSlashOutline", "description": "ME Frp 通用客户端教程——一键下载并运行客户端，快速完成隧道映射配置。" },
         { "path": "usage/docker", "title": "Docker 容器", "icon": "ServerOutline", "description": "在 Docker 容器中使用 ME Frp——通过官方镜像轻松部署内网穿透服务。" },
         { "path": "usage/fnnas", "title": "fnOS 飞牛私有云", "icon": "FolderOutline", "description": "飞牛 fnOS 使用 ME Frp——在飞牛私有云上配置内网穿透，随时访问 NAS 数据。" },
         { "path": "usage/3rdparty-clients", "title": "第三方客户端教程", "navTitle": "第三方客户端", "icon": "PhonePortraitOutline", "description": "第三方客户端教程——幻缘映射 V5 使用文档。" }
@@ -53,6 +71,7 @@
     }
   ],
   "unlisted": [
+    { "path": "home", "title": "幻缘映射 V5", "description": "ME Frp 项目介绍、网络概念、穿透类型和使用教程。", "index": false },
     { "path": "test", "title": "测试", "description": "文档渲染测试页面。", "index": false }
   ]
 }

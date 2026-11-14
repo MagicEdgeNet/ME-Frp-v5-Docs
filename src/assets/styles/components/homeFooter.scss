@@ -1,0 +1,272 @@
+@use '../variables' as *;
+
+.footer {
+    --surface: #ffffff;
+    --ink: #162235;
+    --muted: #667085;
+    --faint: #98a2b3;
+    --line: #dce2e9;
+    --accent: #2563eb;
+    --legal-gap: 14px;
+
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+}
+
+.footer.is-dark {
+    --surface: #151c26;
+    --ink: #f3f6fa;
+    --muted: #a7b2c1;
+    --faint: #758294;
+    --line: #2a3645;
+    --accent: #72a7ff;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    // 移动端上下布局（全部左对齐）
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 18px;
+        text-align: left;
+
+        .footer-left,
+        .footer-right {
+            width: 100%;
+        }
+
+        .footer-right {
+            justify-content: flex-start;
+        }
+    }
+}
+
+.footer-logos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 16px;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+    }
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    img {
+        height: 36px;
+        width: auto;
+        border-radius: 4px;
+
+        @media (max-width: 768px) {
+            display: block;
+            height: 48px;
+            margin-bottom: 5px;
+        }
+    }
+
+    .footer-logo-text {
+        display: flex;
+        flex-direction: column;
+
+        @media (max-width: 768px) {
+            align-items: flex-start;
+        }
+
+        .logo-title {
+            font-size: 1.1rem;
+            color: var(--ink);
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .logo-subtitle {
+            font-size: 0.77rem;
+            color: var(--faint);
+            font-weight: normal;
+            line-height: 1.2;
+
+            @media (max-width: 768px) {
+                margin-top: 4px;
+            }
+        }
+    }
+}
+
+.footer-left {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+}
+
+.footer-right {
+    display: flex;
+    align-items: flex-start;
+    flex: 0 0 auto;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 15px;
+
+    a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: $transition-all;
+        position: relative;
+
+        &:not(:last-child):after {
+            content: "";
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 12px;
+            background-color: var(--line);
+
+            @media (max-width: 768px) {
+                display: none;
+            }
+        }
+
+        &:hover {
+            color: var(--accent);
+        }
+    }
+
+    @media (max-width: 768px) {
+        justify-content: flex-start;
+        gap: 10px 15px;
+
+        a {
+            padding: 4px 8px;
+        }
+    }
+}
+
+// 横跨整行的备案与合规信息
+.footer-legal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-gap);
+}
+
+.legal-line,
+.legal-licenses {
+    display: flex;
+    align-items: center;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.5;
+        text-decoration: none;
+        transition: $transition-all;
+
+        &:hover {
+            color: var(--accent);
+        }
+    }
+
+    .nq-icp-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: block;
+        flex-shrink: 0;
+    }
+
+    .license-text {
+        min-width: 0;
+    }
+}
+
+.legal-line {
+    margin: 0;
+}
+
+// 第二行：其余备案项横向排列，放不下自动换行
+.legal-licenses {
+    flex-wrap: wrap;
+    gap: 10px 28px;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        gap: 10px 0;
+
+        a {
+            line-height: 1.55;
+        }
+    }
+}
+
+// 合规警示：一整段
+.legal-notice {
+    max-width: 1000px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.75;
+    opacity: 0.85;
+
+    b {
+        margin-right: 6px;
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+        text-underline-offset: 2px;
+        transition: $transition-all;
+
+        &:hover {
+            color: var(--accent);
+        }
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.82rem;
+        line-height: 1.7;
+    }
+}

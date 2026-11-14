@@ -61,7 +61,7 @@
 
 ## tls.xxxFile 在 TLS 启用时必须指定
 
-HTTPS 隧道必须配置 TLS。请查阅 [这份文档](/docs/usage/common#http-https-隧道请注意) 进行配置。
+HTTPS 隧道必须配置 TLS。请查阅 [这份文档](/docs/usage/client#http-https-隧道请注意) 进行配置。
 
 ## 节点已禁用
 

@@ -13,7 +13,7 @@
 64 位系统用户请下载 `amd64` 架构，32 位系统请下载 `386` 架构。
 
 :::warning 兼容性要求
-若您是 Windows 10 以下、Windows Server 2016 以下、macOS 10.15 以下的用户，请使用 [上游开源的 frpc v0.51.3](https://github.com/fatedier/frp/releases/tag/v0.51.3)，我们会尽量保持上游 frpc 的兼容性，不过部分功能将失效。  
+若您是 Windows 10 以下、Windows Server 2016 以下、macOS 10.15 以下的用户，请使用 [上游开源的 Frpc v0.51.3](https://github.com/fatedier/frp/releases/tag/v0.51.3)，我们会尽量保持上游 Frpc 的兼容性，不过部分功能将失效。\
 此外，使用旧版本只能收到有限技术支持。
 :::
 

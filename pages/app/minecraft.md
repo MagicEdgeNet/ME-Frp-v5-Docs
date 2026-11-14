@@ -58,7 +58,7 @@
 
 ## 启动隧道
 
-请您阅读 [启动隧道教程 - 通用客户端](/docs/usage/common) 快速上手，本教程部分不再赘述。
+请您阅读 [启动隧道教程 - 通用客户端](/docs/introduction) 快速上手，本教程部分不再赘述。
 
 日志中会出现一行 `您可以使用 [xxx] 访问您的服务` 的提示，则客户端可以使用这个地址来加入您的游戏。
 
@@ -105,7 +105,7 @@
 
 ### 配置隧道
 
-创建/编辑隧道时，在**高级配置**中设置 Proxy Protocol 后，frpc 就会在请求本地服务时应用 Proxy Protocol 协议：
+创建/编辑隧道时，在**高级配置**中设置 Proxy Protocol 后，Frpc 就会在请求本地服务时应用 Proxy Protocol 协议：
 
 ![高级配置-Proxy Protocol](https://img.fastmirror.net/s/2025/11/16/6918b3a3b7d0f.png)
 

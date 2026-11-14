@@ -1,0 +1,9 @@
+html, body, #app { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; }
+.fade-enter-active, .fade-leave-active { transition: opacity 160ms ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active, .fade-leave-active { transition: none; }
+}

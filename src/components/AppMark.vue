@@ -1,0 +1,2 @@
+<template><span class="app-mark" aria-hidden="true"><span></span><span></span><span></span></span></template>
+<style scoped>.app-mark{display:inline-flex;gap:3px;align-items:flex-end;width:21px;height:21px}.app-mark span{display:block;width:5px;border-radius:2px 2px 0 0;background:currentColor}.app-mark span:nth-child(1){height:10px;opacity:.55}.app-mark span:nth-child(2){height:16px;opacity:.8}.app-mark span:nth-child(3){height:21px}</style>
