@@ -135,19 +135,19 @@ onUnmounted(() => {
   min-width: 40px !important;
   height: 40px !important;
   padding: 0 !important;
-  border: 2px solid var(--n-text-color, #111111) !important;
+  border: 2px solid var(--n-text-color, #111827) !important;
   border-radius: 50%;
-  background: var(--n-color-popover, #ffffff) !important;
-  color: var(--n-text-color, #111111) !important;
+  background: var(--n-color-popover, #fff) !important;
+  color: var(--n-text-color, #111827) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
 }
 
 :global(.docs-back-top:hover) {
-  background: var(--n-color-hover, #eeeeee) !important;
+  background: var(--n-color-hover, #e7efff) !important;
 }
 
 :global(.docs-back-top:focus-visible) {
-  outline: 3px solid var(--n-text-color, #111111);
+  outline: 3px solid var(--n-color-target, #2563eb);
   outline-offset: 3px;
 }
 

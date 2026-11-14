@@ -42,18 +42,18 @@
 .toc-trigger-hint { color: var(--docs-muted); font-size: 12px; white-space: nowrap; }
 
 :global(.mobile-toc-drawer-panel) {
-  --docs-bg: #ffffff;
-  --docs-line: #d4d4d4;
-  --docs-muted: #555555;
-  --docs-accent: #111111;
-  --docs-ink: #111111;
+  --docs-bg: #fff;
+  --docs-line: #c7d0dc;
+  --docs-muted: #475569;
+  --docs-accent: #1d4ed8;
+  --docs-ink: #111827;
 }
 :global(.mobile-toc-drawer-panel.is-dark) {
-  --docs-bg: #1a1a1a;
-  --docs-line: #404040;
-  --docs-muted: #d4d4d4;
-  --docs-accent: #ffffff;
-  --docs-ink: #ffffff;
+  --docs-bg: #151c26;
+  --docs-line: #334155;
+  --docs-muted: #c3ccd7;
+  --docs-accent: #8ab8ff;
+  --docs-ink: #f5f7fb;
 }
 :global(.mobile-toc-drawer-panel .n-drawer-header) { display: none; }
 :global(.mobile-toc-drawer-panel .n-drawer-content) {
@@ -110,13 +110,13 @@
 
 .mobile-toc-drawer :deep(.is-nested a) { padding-left: 28px; }
 .mobile-toc-drawer :deep(.is-active a) {
-  color: var(--docs-ink, #111111);
-  background: color-mix(in srgb, var(--docs-accent, #111111) 10%, transparent);
-  box-shadow: inset 3px 0 0 var(--docs-accent, #111111);
+  color: var(--docs-accent, #2563eb);
+  background: color-mix(in srgb, var(--docs-accent, #2563eb) 10%, transparent);
+  box-shadow: inset 3px 0 0 var(--docs-accent, #2563eb);
   font-weight: 600;
 }
-.mobile-toc-drawer :deep(a:hover) { background: color-mix(in srgb, var(--docs-accent, #111111) 7%, transparent); }
-.mobile-toc-drawer :deep(.is-active a:hover) { background: color-mix(in srgb, var(--docs-accent, #111111) 14%, transparent); }
+.mobile-toc-drawer :deep(a:hover) { background: color-mix(in srgb, var(--docs-accent, #2563eb) 7%, transparent); }
+.mobile-toc-drawer :deep(.is-active a:hover) { background: color-mix(in srgb, var(--docs-accent, #2563eb) 14%, transparent); }
 .toc-empty { margin: 0; padding: 10px 12px; color: var(--docs-muted); font-size: 13px; }
 
 @media (min-width: 769px) and (min-device-width: 769px) {

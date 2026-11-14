@@ -51,21 +51,21 @@ const settingsOptions = computed<DropdownOption[]>(() => [
 }
 
 :global(.docs-settings-float .n-float-button__fill) {
-  border: 2px solid var(--n-text-color, #111111);
-  background: var(--n-color-popover, #ffffff);
-  color: var(--n-text-color, #111111);
+  border: 2px solid var(--n-text-color, #111827);
+  background: var(--n-color-popover, #fff);
+  color: var(--n-text-color, #111827);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
 :global(.docs-settings-float:hover .n-float-button__fill) {
-  background: var(--n-color-hover, #eeeeee);
+  background: var(--n-color-hover, #edf3fc);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.36);
 }
 
 :global(.docs-settings-float:focus-visible) {
-  outline: 3px solid var(--n-text-color, #111111);
+  outline: 3px solid var(--n-color-target, #1d4ed8);
   outline-offset: 3px;
 }
 
