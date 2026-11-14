@@ -6,12 +6,6 @@
         <div class="logo"><RouterLink to="/" class="logo-link" aria-label="ME Frp 文档首页"><AppLogo /><span class="logo-text"><b>幻缘映射</b><em>文档中心</em></span></RouterLink></div>
         <nav class="nav-links" aria-label="文档导航">
           <RouterLink :to="docPath('introduction')"><NButton :bordered="false">快速开始</NButton></RouterLink>
-          <NPopover v-model:show="showDesktopMenu" trigger="click" placement="bottom-end" :show-arrow="false">
-            <template #trigger><NButton quaternary aria-label="打开完整文档目录">更多文档</NButton></template>
-            <NScrollbar class="docs-desktop-nav-scroll" style="width: min(320px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
-              <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
-            </NScrollbar>
-          </NPopover>
           <NButton quaternary aria-label="搜索文档" @click="openSearch"><template #icon><NIcon :component="SearchOutline" /></template>搜索文档</NButton>
           <NButton secondary type="primary" tag="a" href="https://www.mefrp.com/dashboard">管理面板</NButton>
         </nav>
@@ -22,19 +16,17 @@
         <div class="mobile-left"><RouterLink to="/" class="logo-link" aria-label="ME Frp 文档首页"><AppLogo /><span class="logo-text"><b>幻缘映射</b><em>文档</em></span></RouterLink></div>
         <div class="mobile-right" @click.stop>
           <NButton text class="header-action" aria-label="搜索文档" @click="openSearch"><NIcon :size="20" :component="SearchOutline" /></NButton>
-          <NPopover v-model:show="showMobileMenu" trigger="click" placement="bottom-end" :show-arrow="false">
-            <template #trigger>
-              <NButton text class="header-action menu-button" aria-label="打开完整文档目录" :aria-expanded="showMobileMenu">
-                <NIcon :size="22" :component="MenuOutline" />
-              </NButton>
-            </template>
-            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(280px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
-              <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
-            </NScrollbar>
-          </NPopover>
+          <NButton text class="header-action menu-button" aria-label="打开完整文档目录" aria-expanded="showMobileMenu" @click="showMobileMenu = true">
+            <NIcon :size="22" :component="MenuOutline" />
+          </NButton>
         </div>
       </div>
     </NLayoutHeader>
+    <NDrawer v-model:show="showMobileMenu" :width="280" placement="left" class="docs-nav-drawer" role="navigation" aria-label="文档导航菜单">
+      <NDrawerContent title="文档导航" closable :native-scrollbar="false">
+        <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
+      </NDrawerContent>
+    </NDrawer>
     <NModal v-model:show="searchOpen" :auto-focus="false" :mask-closable="true" :close-on-esc="true" @after-enter="focusSearchInput">
       <div class="search-dialog" :class="{ 'is-dark': isDarkMode }" role="dialog" aria-modal="true" aria-labelledby="search-dialog-title">
         <header class="search-dialog-header">
@@ -69,7 +61,7 @@
 <script setup lang="ts">
 import { computed, h, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
-import { NButton, NConfigProvider, NIcon, NInput, NLayoutHeader, NMenu, NModal, NPopover, NScrollbar } from 'naive-ui'
+import { NButton, NConfigProvider, NDrawer, NDrawerContent, NIcon, NInput, NLayoutHeader, NMenu, NModal } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { BookOutline, CloseOutline, LogoGithub, MenuOutline, SearchOutline, SpeedometerOutline } from '@vicons/ionicons5'
 import AppLogo from './AppLogo.vue'
@@ -82,7 +74,6 @@ import { getExemptedTheme } from '../constants/theme'
 const theme = inject<ThemeContext | null>('theme', null)
 const isDarkMode = theme?.isDarkMode ?? ref(false)
 const router = useRouter()
-const showDesktopMenu = ref(false)
 const showMobileMenu = ref(false)
 const searchOpen = ref(false)
 const query = ref('')
@@ -102,7 +93,6 @@ const menuOptions: MenuOption[] = [
 ]
 const currentMenuKey = computed(() => docsMenuActiveKey(router.currentRoute.value.path))
 function closeMenus() {
-  showDesktopMenu.value = false
   showMobileMenu.value = false
 }
 function handleMenuSelect(key: string) {
