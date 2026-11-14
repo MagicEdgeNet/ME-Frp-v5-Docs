@@ -146,22 +146,22 @@ onUnmounted(() => {
 :global(.docs-back-top-button.n-button) {
   width: 44px;
   height: 44px;
-  border: 1px solid var(--n-border-color, #b6c3d2);
+  border: 2px solid var(--n-text-color, #111827);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--n-color-popover, #fff) 94%, transparent) !important;
-  color: var(--n-text-color, #162235) !important;
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--n-text-color, #162235) 24%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  backdrop-filter: blur(12px) saturate(150%);
+  background: var(--n-color-popover, #fff) !important;
+  color: var(--n-text-color, #111827) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 :global(.docs-back-top-button.n-button:hover) {
   background: var(--n-color-hover, #e7efff) !important;
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--n-text-color, #162235) 30%, transparent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.36);
 }
 
 :global(.docs-back-top-button.n-button:focus-visible) {
-  outline: 2px solid var(--n-color-target, #2563eb);
+  outline: 3px solid var(--n-color-target, #2563eb);
   outline-offset: 3px;
 }
 
