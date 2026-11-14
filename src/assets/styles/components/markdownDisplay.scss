@@ -22,7 +22,7 @@
   .mermaid-diagram svg { width: max(100%, 680px); max-width: none; margin-left: 0; }
 }
 
-.markdown-container.dark-theme .mermaid-diagram { --docs-bg: #151c26; --docs-ink: #f5f7fb; --docs-line: #334155; --docs-muted: #c3ccd7; }
+.markdown-container.dark-theme .mermaid-diagram { --docs-bg: #1a1a1a; --docs-ink: #ffffff; --docs-line: #404040; --docs-muted: #d4d4d4; }
 
 .loading-container {
   display: flex;
@@ -59,10 +59,10 @@
 
   a {
     position: relative;
-    color: var(--docs-accent, #1d4ed8);
+    color: var(--docs-ink, #111111);
     text-decoration: none;
     transition: color 160ms ease;
-    &:hover { color: var(--docs-accent-hover, #1742b5); }
+    &:hover { color: var(--docs-ink, #111111); }
   }
 
   .header-anchor {
@@ -91,8 +91,8 @@
     padding: 12px 18px;
     border-left: 3px solid var(--docs-line, #dce2e9);
     border-radius: 4px;
-    background: var(--docs-bg, #fff);
-    color: var(--docs-muted, #667085);
+    background: var(--docs-surface-muted, #eeeeee);
+    color: var(--docs-ink, #111111);
   }
   blockquote > :first-child { margin-top: 0; }
   blockquote > :last-child { margin-bottom: 0; }

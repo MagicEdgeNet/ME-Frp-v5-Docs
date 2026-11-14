@@ -35,11 +35,8 @@
       <PullToRefresh v-if="!isHome" target=".docs-scroll > .n-scrollbar-container" :top="isMobile ? 98 : 59" />
     </div>
 
-    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="88">
-      <NButton quaternary circle class="docs-back-top-button" aria-label="回到顶部">
-        <NIcon :component="ArrowUpOutline" />
-      </NButton>
-    </NBackTop>
+    <NBackTop class="docs-back-top" :listen-to="getMainScrollContainer" :visibility-height="240" :right="24" :bottom="88"
+      aria-label="返回顶部" />
 
   </NConfigProvider>
 </template>
@@ -47,8 +44,8 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router'
 import { ref, computed, inject, onMounted, onUnmounted, watch } from 'vue'
-import { NButton, NConfigProvider, NScrollbar, NIcon, NBackTop } from 'naive-ui'
-import { ArrowUpOutline, ChevronBackOutline, ChevronForwardOutline } from '@vicons/ionicons5'
+import { NConfigProvider, NScrollbar, NBackTop } from 'naive-ui'
+import { ChevronBackOutline, ChevronForwardOutline } from '@vicons/ionicons5'
 import DocsTopMenu from '../components/DocsTopMenu.vue'
 import PullToRefresh from '../components/PullToRefresh.vue'
 import DocsLeftMenu from '../components/DocsLeftMenu.vue'
@@ -134,34 +131,23 @@ onUnmounted(() => {
 
 :global(.docs-back-top) {
   box-sizing: border-box;
-  width: 44px !important;
-  min-width: 44px !important;
-  height: 44px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border: 2px solid var(--n-text-color, #111111) !important;
   border-radius: 50%;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-:global(.docs-back-top-button.n-button) {
-  width: 44px;
-  height: 44px;
-  border: 2px solid var(--n-text-color, #111827);
-  border-radius: 50%;
-  background: var(--n-color-popover, #fff) !important;
-  color: var(--n-text-color, #111827) !important;
+  background: var(--n-color-popover, #ffffff) !important;
+  color: var(--n-text-color, #111111) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
 }
 
-:global(.docs-back-top-button.n-button:hover) {
-  background: var(--n-color-hover, #e7efff) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.36);
+:global(.docs-back-top:hover) {
+  background: var(--n-color-hover, #eeeeee) !important;
 }
 
-:global(.docs-back-top-button.n-button:focus-visible) {
-  outline: 3px solid var(--n-color-target, #2563eb);
+:global(.docs-back-top:focus-visible) {
+  outline: 3px solid var(--n-text-color, #111111);
   outline-offset: 3px;
 }
 

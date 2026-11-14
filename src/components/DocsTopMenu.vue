@@ -8,7 +8,7 @@
           <RouterLink :to="docPath('introduction')"><NButton :bordered="false">快速开始</NButton></RouterLink>
           <NPopover v-model:show="showDesktopMenu" trigger="click" placement="bottom-end" :show-arrow="false">
             <template #trigger><NButton quaternary aria-label="打开完整文档目录">更多文档</NButton></template>
-            <NScrollbar class="docs-desktop-nav-scroll" style="width: min(380px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
+            <NScrollbar class="docs-desktop-nav-scroll" style="width: min(320px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
               <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
             </NScrollbar>
           </NPopover>
@@ -28,7 +28,7 @@
                 <NIcon :size="22" :component="MenuOutline" />
               </NButton>
             </template>
-            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(360px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
+            <NScrollbar class="docs-mobile-nav-scroll" style="width: min(280px, calc(100vw - 32px)); max-height: min(72dvh, 640px)" :native-scrollbar="false">
               <NMenu :options="menuOptions" :value="currentMenuKey" :default-expanded-keys="docsMenuExpandedKeys" @update:value="handleMenuSelect" />
             </NScrollbar>
           </NPopover>
