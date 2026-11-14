@@ -328,7 +328,7 @@ let browser
     const panel = el.querySelector('.n-drawer-content')
     return { background: getComputedStyle(panel).backgroundColor, blur: getComputedStyle(panel).backdropFilter }
   })
-  assert.equal(darkDrawerVisuals.background, 'rgb(26, 26, 26)')
+  assert.equal(darkDrawerVisuals.background, 'rgb(21, 28, 38)')
   assert.equal(darkDrawerVisuals.blur, 'none')
   await selectTheme(drawerWasDark ? 'dark' : 'light')
   await page.waitForFunction(previous => document.querySelector('.mobile-toc-drawer-panel')?.classList.contains('is-dark') === previous, drawerWasDark)
