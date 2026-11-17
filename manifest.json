@@ -68,6 +68,12 @@
         { "path": "app/smb", "title": "SMB 文件共享", "icon": "FolderOutline", "description": "SMB 文件共享穿透教程——通过 ME Frp 在外网访问内网 Windows 共享文件夹。" },
         { "path": "app/palworld", "title": "幻兽帕鲁 (Palworld) 开服联机", "navTitle": "幻兽帕鲁联机", "icon": "GameControllerOutline", "description": "幻兽帕鲁 (Palworld) 开服联机教程——使用 ME Frp 快速搭建帕鲁专用服务器并与好友联机。" }
       ]
+    },
+    {
+      "id": "contributing", "title": "参与贡献", "icon": "HeartOutline", "standalone": true,
+      "pages": [
+        { "path": "contributing", "title": "参与贡献", "icon": "HeartOutline", "description": "了解本站文档的许可协议、贡献者许可协议与内容格式要求，以及提交 Pull Request 时的确认声明。" }
+      ]
     }
   ],
   "unlisted": [
